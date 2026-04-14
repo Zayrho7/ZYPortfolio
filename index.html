@@ -573,7 +573,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:36px
 
 <section id="contact">
   <p class="s-label rv">// <span data-i18n="contact_label">Contact</span></p>
-  <h2 class="s-title rv" data-i18n="contact_title">LANÇONS<br>TON PROJET</h2>
+  <h2 class="s-title rv" data-i18n="contact_title">MES<br>RÉSEAUx</h2>
   <div class="contact-grid">
     <div class="rv">
       <p data-i18n="contact_p">Tu as un projet en tête ? Une idée de map, un monde à construire, un niveau à concevoir ? Parle-moi de ton univers — je m'occupe du reste.</p>
@@ -584,33 +584,21 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:36px
         <a href="#" class="c-link"><span class="c-link-icon">▶</span><span class="c-link-text">YouTube : Zayrho69</span></a>
       </div>
     </div>
-    <div class="contact-form rv rv-d2">
-      <div class="cf2-row">
-        <div class="cf2-group"><label class="cf2-label" data-i18n="c2_name">Pseudo</label><input class="cf2-input" type="text" placeholder="Votre pseudo"></div>
-        <div class="cf2-group"><label class="cf2-label" data-i18n="c2_email">Email</label><input class="cf2-input" type="email" placeholder="votre@email.com"></div>
-      </div>
-      <div class="cf2-group">
-        <label class="cf2-label" data-i18n="c2_type">Type de projet</label>
-        <select class="cf2-select">
-          <option data-i18n="c2_type_ph">Choisir une formule...</option>
-          <option>Starter — €20 / 4500 R$</option>
-          <option>Pro — €45 / 7500 R$</option>
-          <option>Elite — €150 / 25000 R$</option>
-          <option>Sur mesure / Custom</option>
-        </select>
-      </div>
-      <div class="cf2-group"><label class="cf2-label" data-i18n="c2_desc">Décrivez votre projet</label><textarea class="cf2-textarea" placeholder="Parlez-moi de votre univers, vos attentes, votre budget..."></textarea></div>
-      <button class="btn btn-g" style="width:100%;border:none" data-i18n="c2_send">Envoyer le brief →</button>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="f-logo">ZAY<b>RHO</b></div>
-  <div class="f-copy" data-i18n="footer_copy">© 2026 ZAYRHO — LEVEL DESIGNER & BUILDER</div>
-  <div class="f-copy" data-i18n="footer_rights">ALL RIGHTS RESERVED</div>
-</footer>
-
+   
+<style>
+  /* Ton code CSS va ici */
+  body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
+  main { flex: 1; }
+  footer { 
+    width: 100%; display: flex; justify-content: space-between; 
+    align-items: center; padding: 30px 50px; background: #0a0a0a; 
+    border-top: 1px solid rgba(255, 215, 0, 0.1); box-sizing: border-box; 
+  }
+  .f-logo { color: #fff; font-size: 1.2rem; }
+  .f-logo b { color: #ffcc00; }
+  .f-copy { color: #666; font-size: 0.9rem; }
+  @media (max-width: 768px) { footer { flex-direction: column; gap: 15px; text-align: center; } }
+</style>
 <script>
 /* CURSOR */
 const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
@@ -680,7 +668,7 @@ fr:{
   secret_label:'Ton code de suppression',secret_warn:'⚠ Note-le ! Tu en auras besoin pour supprimer ton avis.',
   del_title:'Supprimer l\'avis',del_sub:'Entre le code secret reçu lors de la publication pour supprimer ton avis.',del_err:'Code incorrect. Réessaie.',del_cancel:'Annuler',del_confirm:'Supprimer',
   featured_badge:'Avis mis en avant',del_my_review:'Supprimer mon avis',
-  contact_label:'Contact',contact_title:"LANÇONS<br>TON PROJET",
+  contact_label:'Contact',contact_title:"MES<br>RÉSEAUX",
   contact_p:"Tu as un projet en tête ? Une idée de map, un monde à construire, un niveau à concevoir ? Parle-moi de ton univers — je m'occupe du reste.",
   c2_name:'Pseudo',c2_email:'Email',c2_type:'Type de projet',c2_type_ph:'Choisir une formule...',c2_desc:'Décrivez votre projet',c2_send:'Envoyer le brief →',
   footer_copy:'© 2025 ZAYRHO — LEVEL DESIGNER & BUILDER',footer_rights:'ALL RIGHTS RESERVED',
@@ -730,7 +718,7 @@ en:{
   secret_label:'Your deletion code',secret_warn:'⚠ Save it! You will need it to delete your review later.',
   del_title:'Delete review',del_sub:'Enter the secret code you received when you published your review.',del_err:'Wrong code. Try again.',del_cancel:'Cancel',del_confirm:'Delete',
   featured_badge:'Featured review',del_my_review:'Delete my review',
-  contact_label:'Contact',contact_title:"LET'S START<br>YOUR PROJECT",
+  contact_label:'Contact',contact_title:"MY<br>NETWORKS",
   contact_p:"Got a project in mind? A map idea, a world to build, a level to design? Tell me about your universe — I'll handle the rest.",
   c2_name:'Username',c2_email:'Email',c2_type:'Project type',c2_type_ph:'Choose a plan...',c2_desc:'Describe your project',c2_send:'Send the brief →',
   footer_copy:'© 2026 ZAYRHO — LEVEL DESIGNER & BUILDER',footer_rights:'ALL RIGHTS RESERVED',
@@ -778,6 +766,7 @@ let comments=[
 
 let currentSort='best';
 let deleteTargetId=null;
+
 
 /* SORT */
 function setSort(s){
