@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ZAYRHO — Level Designer & Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Inter+Tight:ital,wght@0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060605;
+  --surface:#0e0d0b;
+  --card:#141310;
+  --border:#252320;
+  --border-hover:#3a3730;
+  --gold:#c8a44a;
+  --gold2:#e9cf85;
+  --gold-dim:rgba(200,164,74,0.12);
+  --white:#f2ede3;
+  --muted:#6b6760;
+  --muted2:#4a4845;
+  --rbx:#00b4d8;
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+  --font-display:'Inter Tight',system-ui,sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:var(--font);overflow-x:hidden;cursor:none;font-size:15px;line-height:1.6}
+
+#cur{position:fixed;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s}
+#cur2{position:fixed;width:32px;height:32px;border:1px solid rgba(200,164,74,.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:22px 56px;display:flex;justify-content:space-between;align-items:center;transition:background .4s,border-color .4s;border-bottom:1px solid transparent}
+nav.stuck{background:rgba(6,6,5,.94);backdrop-filter:blur(14px);border-color:var(--border)}
+.n-logo{font-family:var(--font-display);font-size:22px;letter-spacing:3px;font-weight:900;color:var(--white);text-decoration:none;text-transform:uppercase}
+.n-logo b{color:var(--gold)}
+.n-links{display:flex;gap:32px;list-style:none;align-items:center}
+.n-links a{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .25s;font-weight:500}
+.n-links a:hover{color:var(--gold)}
+.lang-toggle{display:flex;background:var(--card);border:1px solid var(--border);overflow:hidden}
+.lang-btn{padding:8px 14px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);background:none;border:none;cursor:none;transition:all .25s;font-family:var(--font);font-weight:600}
+.lang-btn.active{background:var(--gold);color:var(--bg)}
+
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:.7}
+
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:end;padding:0 56px 80px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 60% 30%,rgba(200,164,74,.05) 0%,transparent 65%),radial-gradient(ellipse 50% 70% at 10% 90%,rgba(200,164,74,.03) 0%,transparent 60%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(200,164,74,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(200,164,74,.025) 1px,transparent 1px);background-size:80px 80px;mask-image:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.6) 40%,rgba(0,0,0,.6) 70%,transparent 100%)}
+.hero-left{position:relative;z-index:2}
+.hero-eyebrow{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:28px;opacity:0;animation:up .7s ease forwards .2s;font-weight:500}
+.hero-title{font-family:var(--font-display);font-size:clamp(64px,10vw,140px);line-height:.88;font-weight:900;letter-spacing:-2px;opacity:0;animation:up .8s ease forwards .4s;text-transform:uppercase}
+.hero-title .g{color:var(--gold)}
+.hero-title .stroke{-webkit-text-stroke:1.5px var(--gold);color:transparent}
+.hero-sub{font-size:16px;color:var(--muted);line-height:1.7;max-width:420px;margin-top:28px;font-weight:400;opacity:0;animation:up .7s ease forwards .6s}
+.hero-actions{display:flex;gap:16px;margin-top:44px;opacity:0;animation:up .7s ease forwards .8s;flex-wrap:wrap}
+.hero-right{position:relative;z-index:2;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-end;gap:32px;opacity:0;animation:fade .9s ease forwards 1s}
+.stat-block{text-align:right}
+.stat-n{font-family:var(--font-display);font-size:52px;color:var(--gold);line-height:1;font-weight:900}
+.stat-l{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted2);margin-top:4px;font-weight:500}
+
+.btn{display:inline-block;padding:14px 36px;font-family:var(--font);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;border:none;cursor:none;transition:all .25s;font-weight:600;border-radius:0}
+.btn-g{background:var(--gold);color:var(--bg)}
+.btn-g:hover{background:var(--gold2)}
+.btn-o{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.btn-o:hover{border-color:var(--gold);color:var(--gold)}
+
+.mq{border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;padding:14px 0;background:var(--surface)}
+.mq-track{display:flex;width:max-content;animation:mq 25s linear infinite}
+.mq-item{font-family:var(--font-display);font-size:13px;letter-spacing:4px;color:var(--muted2);padding:0 36px;white-space:nowrap;font-weight:700;text-transform:uppercase}
+.mq-item.hi{color:var(--gold)}
+
+section{padding:110px 56px;position:relative}
+.s-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;font-weight:600}
+.s-title{font-family:var(--font-display);font-size:clamp(38px,5.5vw,70px);line-height:.92;color:var(--white);margin-bottom:56px;font-weight:900;letter-spacing:-1px;text-transform:uppercase}
+
+.rv{opacity:0;transform:translateY(36px);transition:opacity .7s ease,transform .7s ease}
+.rv.in{opacity:1;transform:none}
+.rv-d1{transition-delay:.1s}.rv-d2{transition-delay:.2s}.rv-d3{transition-delay:.3s}.rv-d4{transition-delay:.4s}
+
+#about{background:var(--surface);display:grid;grid-template-columns:5fr 7fr;gap:80px;align-items:center}
+.about-card{background:var(--card);border:1px solid var(--border);aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.about-card-inner{width:72%;height:72%;border:1px solid var(--border-hover);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.about-glyph{font-family:var(--font-display);font-size:80px;color:var(--gold);opacity:.15;line-height:1;font-weight:900}
+.about-chip{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold-dim);padding:8px 16px;font-weight:600}
+.about-badge{position:absolute;bottom:-1px;right:-1px;background:var(--gold);padding:16px 20px;text-align:center}
+.about-badge-n{font-family:var(--font-display);font-size:26px;color:var(--bg);line-height:1;font-weight:900}
+.about-badge-l{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--bg);opacity:.7;font-weight:600}
+.about-body p{color:var(--muted);line-height:1.8;font-size:14px;margin-bottom:18px}
+.about-body strong{color:var(--white);font-weight:600}
+.skills{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:36px}
+.sk{padding:12px 16px;border:1px solid var(--border);font-size:12px;color:var(--muted);display:flex;align-items:center;gap:10px;transition:border-color .25s,color .25s;font-weight:500}
+.sk:hover{border-color:var(--gold);color:var(--white)}
+.sk::before{content:'';width:4px;height:4px;background:var(--gold);border-radius:50%;flex-shrink:0}
+
+#gallery{background:var(--bg)}
+.gal-hint{font-size:12px;letter-spacing:.5px;color:var(--muted2);font-style:italic;margin-bottom:48px;padding:12px 16px;border-left:2px solid var(--gold);background:var(--card)}
+.gal-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:3px}
+.gi{position:relative;overflow:hidden;background:var(--card);cursor:none}
+.gi:nth-child(1){grid-column:span 7}
+.gi:nth-child(2){grid-column:span 5}
+.gi:nth-child(3){grid-column:span 4}
+.gi:nth-child(4){grid-column:span 8}
+.gi:nth-child(5){grid-column:span 6}
+.gi:nth-child(6){grid-column:span 6}
+.gi-img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;transition:transform .6s ease;filter:brightness(.85)}
+.gi:hover .gi-img{transform:scale(1.05);filter:brightness(1)}
+.gi-placeholder{width:100%;aspect-ratio:16/10;display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:1px dashed var(--border-hover)}
+.gi-placeholder-icon{font-size:28px;opacity:.2}
+.gi-placeholder-text{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted2);font-weight:500}
+.gi-placeholder-file{font-size:10px;color:var(--gold);opacity:.55;margin-top:2px;text-align:center;padding:0 12px}
+.gi-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(6,6,5,.92) 0%,transparent 55%);opacity:0;transition:opacity .35s;display:flex;flex-direction:column;justify-content:flex-end;padding:22px}
+.gi:hover .gi-overlay{opacity:1}
+.gi-title{font-family:var(--font-display);font-size:20px;font-weight:800;letter-spacing:1px;color:var(--white);text-transform:uppercase}
+.gi-tag{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-top:4px;font-weight:500}
+.gi-static{position:absolute;bottom:14px;left:18px;transition:opacity .3s}
+.gi-static-title{font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--white);opacity:.4;letter-spacing:1px;text-transform:uppercase}
+.gi:hover .gi-static{opacity:0}
+
+#pricing{background:var(--surface)}
+.pct-wrap{display:flex;gap:16px;align-items:center;margin-bottom:48px;flex-wrap:wrap}
+.price-currency-toggle{display:flex;background:var(--card);border:1px solid var(--border);overflow:hidden}
+.pct-btn{padding:10px 22px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);background:none;border:none;cursor:none;transition:all .25s;font-family:var(--font);font-weight:600}
+.pct-btn.active{background:var(--gold);color:var(--bg)}
+.pct-btn.active-rbx{background:var(--rbx);color:var(--bg)}
+.pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
+.pc{background:var(--card);border:1px solid var(--border);padding:36px 28px;display:flex;flex-direction:column;transition:border-color .3s,transform .3s;position:relative}
+.pc:hover{border-color:var(--border-hover);transform:translateY(-4px);z-index:2}
+.pc.hot{border-color:var(--gold);background:linear-gradient(160deg,#120f00 0%,var(--card) 100%)}
+.pc-star{position:absolute;top:-1px;right:20px;background:var(--gold);color:var(--bg);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;font-weight:700}
+.pc-tier{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;font-weight:700}
+.pc-price{font-family:var(--font-display);font-size:56px;line-height:1;color:var(--white);font-weight:900}
+.pc-price sup{font-size:20px;vertical-align:super;color:var(--gold)}
+.rbx-sup{color:var(--rbx) !important}
+.pc-per{font-size:11px;color:var(--muted);margin-top:6px;margin-bottom:28px;font-weight:400}
+.pc-div{height:1px;background:var(--border);margin-bottom:24px}
+.pc-feats{list-style:none;flex:1;margin-bottom:32px}
+.pc-feats li{font-size:12px;color:var(--muted);padding:9px 0;border-bottom:1px solid rgba(37,35,32,.6);display:flex;gap:10px;line-height:1.5;font-weight:400}
+.pc-feats li.yes{color:var(--white);font-weight:500}
+.pc-feats li::before{content:'—';color:var(--gold);flex-shrink:0}
+.pc-btn{display:block;text-align:center;padding:14px;border:1px solid var(--border);color:var(--muted);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;transition:all .3s;font-family:var(--font);font-weight:600}
+.pc-btn:hover,.pc.hot .pc-btn{background:var(--gold);border-color:var(--gold);color:var(--bg)}
+
+#process{background:var(--bg)}
+.proc-wrap{display:grid;grid-template-columns:repeat(5,1fr);position:relative}
+.proc-wrap::before{content:'';position:absolute;top:31px;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.3}
+.proc-step{padding:0 20px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.proc-n{width:62px;height:62px;border:1px solid var(--border-hover);background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:22px;color:var(--gold);margin-bottom:22px;position:relative;z-index:2;transition:background .3s,border-color .3s;font-weight:800}
+.proc-step:hover .proc-n{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+.proc-t{font-size:13px;font-weight:600;color:var(--white);margin-bottom:10px}
+.proc-d{font-size:12px;color:var(--muted);line-height:1.7;font-weight:400}
+
+#comments{background:var(--surface)}
+.comments-layout{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+.comment-form{background:var(--card);border:1px solid var(--border);padding:36px}
+.cf-title{font-family:var(--font-display);font-size:24px;font-weight:800;letter-spacing:0;color:var(--white);margin-bottom:28px;text-transform:uppercase}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cf-group{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.cf-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600}
+.cf-input,.cf-select,.cf-textarea{background:var(--bg);border:1px solid var(--border);color:var(--white);font-family:var(--font);font-size:13px;padding:12px 14px;outline:none;transition:border-color .25s;width:100%;font-weight:400}
+.cf-input:focus,.cf-select:focus,.cf-textarea:focus{border-color:var(--gold)}
+.cf-select{cursor:none;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6760' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;background-color:var(--bg)}
+.cf-select option{background:var(--card);color:var(--white)}
+.cf-textarea{min-height:100px;resize:none}
+.stars-input{display:flex;gap:6px}
+.star-btn{font-size:22px;background:none;border:none;cursor:none;color:var(--muted2);transition:color .2s;line-height:1;padding:2px}
+.star-btn.on{color:var(--gold)}
+.cf-submit{width:100%;margin-top:8px}
+
+/* AVIS */
+.cmt-sort-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.cmt-sort-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted2);font-weight:500}
+.sort-btn{padding:6px 14px;font-size:10px;letter-spacing:1px;text-transform:uppercase;background:var(--card);border:1px solid var(--border);color:var(--muted);cursor:none;font-family:var(--font);font-weight:600;transition:all .2s}
+.sort-btn.active{background:var(--gold);border-color:var(--gold);color:var(--bg)}
+.comments-list{display:flex;flex-direction:column;gap:10px}
+.cmt{background:var(--card);border:1px solid var(--border);padding:22px 26px;transition:border-color .25s;position:relative}
+.cmt:hover{border-color:var(--border-hover)}
+.cmt.featured{border-color:var(--gold);background:linear-gradient(160deg,rgba(200,164,74,.05) 0%,var(--card) 100%)}
+.cmt-featured-badge{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.cmt-featured-badge::before{content:'';width:12px;height:1px;background:var(--gold)}
+.cmt-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.cmt-author{display:flex;align-items:center;gap:12px}
+.cmt-av{width:36px;height:36px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:14px;font-weight:800;color:var(--bg);flex-shrink:0}
+.cmt-name{font-size:13px;color:var(--white);font-weight:600}
+.cmt-date{font-size:10px;color:var(--muted2);margin-top:2px;font-weight:400}
+.cmt-meta{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.cmt-stars{font-size:13px;color:var(--gold);letter-spacing:2px}
+.cmt-del-btn{font-size:10px;color:var(--muted2);background:none;border:1px solid var(--border);cursor:none;padding:4px 10px;font-family:var(--font);font-weight:500;transition:all .2s;display:none;letter-spacing:.5px}
+.cmt-del-btn:hover{border-color:#c04040;color:#c04040}
+.cmt-text{font-size:13px;color:var(--muted);line-height:1.8;font-weight:400;font-style:italic}
+.cmt-tag{display:inline-block;margin-top:10px;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold-dim);padding:4px 10px;font-weight:600}
+.no-comments{font-size:12px;color:var(--muted2);text-align:center;padding:40px;border:1px dashed var(--border)}
+.cmt-moderation-badge{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;font-weight:600;display:inline-block;margin-bottom:8px}
+.cmt-moderation-badge.approved{color:#5a9e6a;border:1px solid rgba(90,158,106,.3)}
+.cmt-moderation-badge.rejected{color:#c04040;border:1px solid rgba(192,64,64,.3)}
+
+/* MODERATION OVERLAY */
+.mod-overlay{position:fixed;inset:0;background:rgba(6,6,5,.9);z-index:500;display:flex;align-items:center;justify-content:center;display:none}
+.mod-box{background:var(--card);border:1px solid var(--border);padding:40px;max-width:480px;width:90%;text-align:center}
+.mod-spinner{width:40px;height:40px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 20px}
+.mod-title{font-family:var(--font-display);font-size:18px;font-weight:800;color:var(--white);margin-bottom:8px;text-transform:uppercase}
+.mod-sub{font-size:12px;color:var(--muted);line-height:1.7}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* DELETE MODAL */
+.del-modal{position:fixed;inset:0;background:rgba(6,6,5,.9);z-index:501;display:none;align-items:center;justify-content:center}
+.del-box{background:var(--card);border:1px solid var(--border);padding:36px;max-width:380px;width:90%}
+.del-title{font-family:var(--font-display);font-size:18px;font-weight:800;color:var(--white);margin-bottom:8px;text-transform:uppercase}
+.del-sub{font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.7}
+.del-input{background:var(--bg);border:1px solid var(--border);color:var(--white);font-family:var(--font);font-size:13px;padding:12px 14px;outline:none;width:100%;margin-bottom:12px;letter-spacing:2px;text-align:center;font-weight:600}
+.del-input:focus{border-color:var(--gold)}
+.del-actions{display:flex;gap:10px}
+.del-cancel{flex:1;padding:12px;background:none;border:1px solid var(--border);color:var(--muted);cursor:none;font-family:var(--font);font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:600;transition:all .2s}
+.del-cancel:hover{border-color:var(--border-hover);color:var(--white)}
+.del-confirm{flex:1;padding:12px;background:#7a2020;border:1px solid #7a2020;color:var(--white);cursor:none;font-family:var(--font);font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:600;transition:all .2s}
+.del-confirm:hover{background:#992828;border-color:#992828}
+.del-error{font-size:11px;color:#c04040;margin-bottom:12px;display:none}
+
+#contact{background:var(--bg)}
+.contact-grid{display:grid;grid-template-columns:5fr 7fr;gap:80px;align-items:start}
+.contact-info p{color:var(--muted);font-size:14px;line-height:1.8;margin-bottom:36px;max-width:380px;font-weight:400}
+.c-links{display:flex;flex-direction:column;gap:10px}
+.c-link{display:flex;align-items:center;gap:16px;padding:16px 20px;border:1px solid var(--border);text-decoration:none;transition:all .25s}
+.c-link:hover{border-color:var(--gold);background:var(--gold-dim)}
+.c-link-icon{width:28px;text-align:center;font-size:15px;flex-shrink:0}
+.c-link-text{font-size:12px;color:var(--white);font-weight:400}
+.contact-form{display:flex;flex-direction:column;gap:14px}
+.cf2-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cf2-group{display:flex;flex-direction:column;gap:8px}
+.cf2-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600}
+.cf2-input,.cf2-select,.cf2-textarea{background:var(--card);border:1px solid var(--border);color:var(--white);font-family:var(--font);font-size:13px;padding:12px 14px;outline:none;transition:border-color .25s;width:100%;font-weight:400}
+.cf2-input:focus,.cf2-select:focus,.cf2-textarea:focus{border-color:var(--gold)}
+.cf2-textarea{min-height:120px;resize:none}
+.cf2-select{-webkit-appearance:none;appearance:none;cursor:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6760' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;background-color:var(--card)}
+.cf2-select option{background:var(--card)}
+
+footer{background:var(--surface);border-top:1px solid var(--border);padding:36px 56px;display:flex;justify-content:space-between;align-items:center}
+.f-logo{font-family:var(--font-display);font-size:20px;font-weight:900;letter-spacing:3px;color:var(--muted2);text-transform:uppercase}
+.f-logo b{color:var(--gold)}
+.f-copy{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted2);font-weight:500}
+
+/* AI NAV LINK */
+.nav-ai-link{display:flex!important;align-items:center;gap:6px;padding:8px 16px!important;background:var(--gold-dim);border:1px solid rgba(200,164,74,.35);color:var(--gold)!important;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700!important;transition:all .25s!important}
+.nav-ai-link:hover{background:var(--gold)!important;color:var(--bg)!important;border-color:var(--gold)}
+
+/* AI FAB */
+.ai-fab{position:fixed;bottom:32px;right:32px;z-index:8000;display:flex;align-items:center;gap:0;background:var(--gold);color:var(--bg);border:none;cursor:none;height:54px;font-family:var(--font);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;transition:all .25s}
+.ai-fab:hover{background:var(--gold2);transform:translateY(-3px)}
+.ai-fab-icon{width:54px;height:54px;display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(0,0,0,.15);flex-shrink:0}
+.ai-fab-label{padding:0 20px 0 4px}
+.ai-fab-dot{width:8px;height:8px;background:#4ade80;border-radius:50%;position:absolute;top:9px;right:9px;animation:pdot 2s infinite}
+@keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+@media(max-width:700px){.ai-fab-label{display:none}.ai-fab{bottom:20px;right:20px}}
+
+/* SECRET CODE DISPLAY */
+.secret-reveal{background:var(--bg);border:1px solid var(--gold-dim);padding:14px 18px;margin-top:14px;display:none}
+.secret-reveal-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:6px}
+.secret-code{font-family:var(--font-display);font-size:22px;font-weight:900;letter-spacing:6px;color:var(--gold)}
+.secret-warn{font-size:10px;color:var(--muted2);margin-top:6px;font-weight:400}
+
+@keyframes up{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+@media(max-width:1100px){
+  .hero{grid-template-columns:1fr;padding:120px 30px 60px}
+  .hero-right{display:none}
+  #about{grid-template-columns:1fr;padding:80px 30px}
+  .pricing-grid{grid-template-columns:1fr 1fr}
+  .proc-wrap{grid-template-columns:1fr 1fr 1fr}
+  .proc-wrap::before{display:none}
+  .comments-layout{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr}
+  section{padding:80px 30px}
+  nav{padding:18px 30px}
+  footer{padding:28px 30px;flex-direction:column;gap:12px;text-align:center}
+}
+@media(max-width:700px){
+  .n-links{display:none}
+  .pricing-grid{grid-template-columns:1fr}
+  .proc-wrap{grid-template-columns:1fr 1fr}
+  .gi{grid-column:span 12 !important}
+  .cf-row,.cf2-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="cur2"></div>
+
+<!-- MODERATION OVERLAY -->
+<div class="mod-overlay" id="modOverlay">
+  <div class="mod-box">
+    <div class="mod-spinner"></div>
+    <div class="mod-title" data-i18n="mod_title">Analyse en cours…</div>
+    <div class="mod-sub" data-i18n="mod_sub">Ton avis est vérifié avant publication pour garantir la qualité des retours.</div>
+  </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="del-modal" id="delModal">
+  <div class="del-box">
+    <div class="del-title" data-i18n="del_title">Supprimer l'avis</div>
+    <div class="del-sub" data-i18n="del_sub">Entre le code secret que tu as reçu lors de la publication de ton avis pour le supprimer.</div>
+    <div class="del-error" id="delError" data-i18n="del_err">Code incorrect. Réessaie.</div>
+    <input class="del-input" id="delCodeInput" placeholder="CODE-XXXX" maxlength="9">
+    <div class="del-actions">
+      <button class="del-cancel" onclick="closeDelModal()" data-i18n="del_cancel">Annuler</button>
+      <button class="del-confirm" onclick="confirmDelete()" data-i18n="del_confirm">Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<nav id="nav">
+  <a href="#" class="n-logo">ZAY<b>RHO</b></a>
+  <ul class="n-links">
+    <li><a href="#about" data-i18n="nav_about">À propos</a></li>
+    <li><a href="#process" data-i18n="nav_process">Process</a></li>
+    <li><a href="#gallery" data-i18n="nav_gallery">Créations</a></li>
+    <li><a href="#pricing" data-i18n="nav_pricing">Tarifs</a></li>
+    <li><a href="#comments" data-i18n="nav_reviews">Avis</a></li>
+    <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
+    <li><a href="chat.html" class="nav-ai-link" data-i18n="nav_ai">✦ Assistant IA</a></li>
+    <li>
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="btn-fr" onclick="setLang('fr')">FR</button>
+        <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+      </div>
+    </li>
+  </ul>
+</nav>
+
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-left">
+    <p class="hero-eyebrow" data-i18n="hero_eyebrow">⟐ Level Designer &amp; Game Builder</p>
+    <h1 class="hero-title">ZAY<span class="g">RHO</span><br><span class="stroke">BUILDS</span><br>WORLDS.</h1>
+    <p class="hero-sub" data-i18n="hero_sub">Je conçois des environnements de jeu immersifs, des maps uniques et des expériences qui captivent — du brief à la livraison.</p>
+    <div class="hero-actions">
+      <a href="#gallery" class="btn btn-g" data-i18n="hero_cta1">Voir les créations</a>
+      <a href="#pricing" class="btn btn-o" data-i18n="hero_cta2">Voir les tarifs</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="stat-block"><div class="stat-n">50+</div><div class="stat-l" data-i18n="stat1">Maps créées</div></div>
+    <div class="stat-block"><div class="stat-n">30+</div><div class="stat-l" data-i18n="stat2">Clients satisfaits</div></div>
+    <div class="stat-block"><div class="stat-n">3+</div><div class="stat-l" data-i18n="stat3">Ans d'expérience</div></div>
+  </div>
+</section>
+
+<div class="mq">
+  <div class="mq-track">
+    <span class="mq-item hi">✦</span><span class="mq-item">LEVEL DESIGN</span>
+    <span class="mq-item hi">✦</span><span class="mq-item">WORLD BUILDING</span>
+    <span class="mq-item hi">✦</span><span class="mq-item">GAME ENVIRONMENTS</span>
+    <span class="mq-item hi">✦</span><span class="mq-item">MAP BUILDING</span>
+    <span class="mq-item hi">✦</span><span class="mq-item">IMMERSIVE DESIGN</span>
+    <span class="mq-item hi">✦</span><span class="mq-item">CUSTOM BUILDS</span>
+    <span class="mq-item hi">✦</span><span class="mq-item">LEVEL DESIGN</span>
+    <span class="mq-item hi">✦</span><span class="mq-item">WORLD BUILDING</span>
+    <span class="mq-item hi">✦</span><span class="mq-item">GAME ENVIRONMENTS</span>
+    <span class="mq-item hi">✦</span><span class="mq-item">MAP BUILDING</span>
+    <span class="mq-item hi">✦</span><span class="mq-item">IMMERSIVE DESIGN</span>
+    <span class="mq-item hi">✦</span><span class="mq-item">CUSTOM BUILDS</span>
+  </div>
+</div>
+
+<section id="about">
+  <div class="about-card rv">
+    <div class="about-card-inner">
+      <div class="about-glyph">Z</div>
+      <div class="about-chip" data-i18n="about_chip">Builder Pro</div>
+    </div>
+    <div class="about-badge">
+      <div class="about-badge-n">PRO</div>
+      <div class="about-badge-l" data-i18n="about_badge_l">Builder</div>
+    </div>
+  </div>
+  <div class="about-body rv rv-d2">
+    <p class="s-label">// <span data-i18n="about_label">À propos</span></p>
+    <h2 class="s-title" data-i18n="about_title">L'ART DE<br>CONSTRUIRE</h2>
+    <p data-i18n="about_p1">Je suis <strong>Zayrho</strong>, level designer et builder passionné. Je crée des mondes qui racontent une histoire, des maps qui immergent le joueur dès la première seconde.</p>
+    <p data-i18n="about_p2">Chaque projet est traité avec <strong>précision, créativité et rigueur</strong>. Pas de template générique — chaque build est pensé pour ton univers, tes joueurs, ton identité.</p>
+    <div class="skills">
+      <div class="sk" data-i18n="sk1">Level Design</div>
+      <div class="sk" data-i18n="sk2">World Building</div>
+      <div class="sk" data-i18n="sk3">Environmental Art</div>
+      <div class="sk" data-i18n="sk4">Game Flow Design</div>
+      <div class="sk" data-i18n="sk5">Décors & Ambiance</div>
+      <div class="sk" data-i18n="sk6">Optimisation</div>
+    </div>
+  </div>
+</section>
+
+<section id="process">
+  <p class="s-label rv">// <span data-i18n="proc_label">Process</span></p>
+  <h2 class="s-title rv" data-i18n="proc_title">COMMENT<br>ÇA MARCHE</h2>
+  <div class="proc-wrap">
+    <div class="proc-step rv"><div class="proc-n">01</div><div class="proc-t" data-i18n="step1_t">Brief</div><div class="proc-d" data-i18n="step1_d">Tu m'expliques ton projet, tes attentes, ton univers.</div></div>
+    <div class="proc-step rv rv-d1"><div class="proc-n">02</div><div class="proc-t" data-i18n="step2_t">Devis</div><div class="proc-d" data-i18n="step2_d">Je te propose une formule adaptée et un délai précis.</div></div>
+    <div class="proc-step rv rv-d2"><div class="proc-n">03</div><div class="proc-t" data-i18n="step3_t">Design</div><div class="proc-d" data-i18n="step3_d">Je commence la construction selon ton brief validé.</div></div>
+    <div class="proc-step rv rv-d3"><div class="proc-n">04</div><div class="proc-t" data-i18n="step4_t">Révisions</div><div class="proc-d" data-i18n="step4_d">Tu valides, j'ajuste jusqu'à ce que ce soit parfait.</div></div>
+    <div class="proc-step rv rv-d4"><div class="proc-n">05</div><div class="proc-t" data-i18n="step5_t">Livraison</div><div class="proc-d" data-i18n="step5_d">Tu reçois les fichiers finaux prêts à l'emploi.</div></div>
+  </div>
+</section>
+
+<section id="gallery">
+  <p class="s-label rv">// <span data-i18n="gal_label">Créations</span></p>
+  <h2 class="s-title rv" data-i18n="gal_title">MES<br>RÉALISATIONS</h2>
+  <div class="gal-hint rv" data-i18n="gal_hint">↳ Pour ajouter tes images : place tes fichiers dans le même dossier que index.html, puis remplace "TON_IMAGE_X.jpg" par le vrai nom du fichier.</div>
+  <div class="gal-grid">
+    <div class="gi rv">
+      <img class="gi-img" src=".png" alt="Projet 1" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="gi-placeholder"><div class="gi-placeholder-icon">🖼</div><div class="gi-placeholder-text" data-i18n="ph_text">Ajoute ton image</div><div class="gi-placeholder-file">src="TON_IMAGE_1.jpg"</div></div>
+      <div class="gi-overlay"><div class="gi-title" data-i18n="p1_title">VILLAGE ENNEIGÉ</div><div class="gi-tag" data-i18n="p1_tag">Simulateur / Cache Cahe</div></div>
+      <div class="gi-static"><div class="gi-static-title" data-i18n="p1_title">VILLAGE ENNEIGÉ</div></div>
+    </div>
+    <div class="gi rv rv-d1">
+      <img class="gi-img" src=".png" alt="Projet 2" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="gi-placeholder"><div class="gi-placeholder-icon">🖼</div><div class="gi-placeholder-text" data-i18n="ph_text">Ajoute ton image</div><div class="gi-placeholder-file">src="TON_IMAGE_2.jpg"</div></div>
+      <div class="gi-overlay"><div class="gi-title" data-i18n="p2_title">NEON DISTRICT</div><div class="gi-tag" data-i18n="p2_tag">Zone urbaine — Open World</div></div>
+      <div class="gi-static"><div class="gi-static-title" data-i18n="p2_title">NEON DISTRICT</div></div>
+    </div>
+    <div class="gi rv rv-d2">
+      <img class="gi-img" src="TON_IMAGE_3.jpg" alt="Projet 3" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="gi-placeholder"><div class="gi-placeholder-icon">🖼</div><div class="gi-placeholder-text" data-i18n="ph_text">Ajoute ton image</div><div class="gi-placeholder-file">src="TON_IMAGE_3.jpg"</div></div>
+      <div class="gi-overlay"><div class="gi-title" data-i18n="p3_title">EDEN VALLEY</div><div class="gi-tag" data-i18n="p3_tag">Nature / Survival — Exploration</div></div>
+      <div class="gi-static"><div class="gi-static-title" data-i18n="p3_title">EDEN VALLEY</div></div>
+    </div>
+    <div class="gi rv rv-d1">
+      <img class="gi-img" src="TON_IMAGE_4.jpg" alt="Projet 4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="gi-placeholder"><div class="gi-placeholder-icon">🖼</div><div class="gi-placeholder-text" data-i18n="ph_text">Ajoute ton image</div><div class="gi-placeholder-file">src="TON_IMAGE_4.jpg"</div></div>
+      <div class="gi-overlay"><div class="gi-title" data-i18n="p4_title">WARZONE ARENA</div><div class="gi-tag" data-i18n="p4_tag">PvP compétitif — eSport ready</div></div>
+      <div class="gi-static"><div class="gi-static-title" data-i18n="p4_title">WARZONE ARENA</div></div>
+    </div>
+    <div class="gi rv rv-d2">
+      <img class="gi-img" src="TON_IMAGE_5.jpg" alt="Projet 5" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="gi-placeholder"><div class="gi-placeholder-icon">🖼</div><div class="gi-placeholder-text" data-i18n="ph_text">Ajoute ton image</div><div class="gi-placeholder-file">src="TON_IMAGE_5.jpg"</div></div>
+      <div class="gi-overlay"><div class="gi-title" data-i18n="p5_title">ORBITAL BASE</div><div class="gi-tag" data-i18n="p5_tag">Sci-Fi — Environnement spatial</div></div>
+      <div class="gi-static"><div class="gi-static-title" data-i18n="p5_title">ORBITAL BASE</div></div>
+    </div>
+    <div class="gi rv rv-d3">
+      <img class="gi-img" src="TON_IMAGE_6.jpg" alt="Projet 6" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="gi-placeholder"><div class="gi-placeholder-icon">🖼</div><div class="gi-placeholder-text" data-i18n="ph_text">Ajoute ton image</div><div class="gi-placeholder-file">src="TON_IMAGE_6.jpg"</div></div>
+      <div class="gi-overlay"><div class="gi-title" data-i18n="p6_title">ANCIENT RUINS</div><div class="gi-tag" data-i18n="p6_tag">Archéo / Aventure — Lore Design</div></div>
+      <div class="gi-static"><div class="gi-static-title" data-i18n="p6_title">ANCIENT RUINS</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <p class="s-label rv">// <span data-i18n="price_label">Tarifs</span></p>
+  <h2 class="s-title rv" data-i18n="price_title">CHOISIR<br>SA FORMULE</h2>
+  <div class="pct-wrap rv">
+    <div class="price-currency-toggle" id="currToggle">
+      <button class="pct-btn active" id="btn-eur" onclick="setCurrency('eur')">€ EUR</button>
+      <button class="pct-btn" id="btn-rbx" onclick="setCurrency('rbx')">R$ ROBUX</button>
+    </div>
+  </div>
+  <div class="pricing-grid">
+    <div class="pc rv">
+      <div class="pc-tier" data-i18n="t1_tier">Starter</div>
+      <div class="pc-price" id="p1-price"><sup>€</sup>20</div>
+      <div class="pc-per" data-i18n="t1_per">par map / projet simple</div>
+      <div class="pc-div"></div>
+      <ul class="pc-feats">
+        <li class="yes" data-i18n="t1_f1">1 map personnalisée</li>
+        <li class="yes" data-i18n="t1_f2">Thème au choix</li>
+        <li class="yes" data-i18n="t1_f3">2 révisions incluses</li>
+        <li data-i18n="t1_f4">Livraison sous 5 jours</li>
+        <li data-i18n="t1_f5">Fichiers sources inclus</li>
+      </ul>
+      <a href="#contact" class="pc-btn" data-i18n="t_cta1">Commencer</a>
+    </div>
+    <div class="pc hot rv rv-d1">
+      <div class="pc-star" data-i18n="hot_badge">⭐ Populaire</div>
+      <div class="pc-tier" data-i18n="t2_tier">Pro</div>
+      <div class="pc-price" id="p2-price"><sup>€</sup>45</div>
+      <div class="pc-per" data-i18n="t2_per">par projet élaboré</div>
+      <div class="pc-div"></div>
+      <ul class="pc-feats">
+        <li class="yes" data-i18n="t2_f1">Map détaillée & optimisée</li>
+        <li class="yes" data-i18n="t2_f2">Ambiance / lore inclus</li>
+        <li class="yes" data-i18n="t2_f3">4 révisions incluses</li>
+        <li class="yes" data-i18n="t2_f4">Livraison sous 7 jours</li>
+        <li data-i18n="t2_f5">Fichiers sources inclus</li>
+      </ul>
+      <a href="#contact" class="pc-btn" data-i18n="t_cta2">Choisir Pro</a>
+    </div>
+    <div class="pc rv rv-d2">
+      <div class="pc-tier" data-i18n="t3_tier">Elite</div>
+      <div class="pc-price" id="p3-price"><sup>€</sup>150</div>
+      <div class="pc-per" data-i18n="t3_per">projet complet</div>
+      <div class="pc-div"></div>
+      <ul class="pc-feats">
+        <li class="yes" data-i18n="t3_f1">Zone / monde entier</li>
+        <li class="yes" data-i18n="t3_f2">Level design narratif</li>
+        <li class="yes" data-i18n="t3_f3">Révisions illimitées</li>
+        <li class="yes" data-i18n="t3_f4">Support post-livraison</li>
+        <li class="yes" data-i18n="t3_f5">Fichiers sources inclus</li>
+      </ul>
+      <a href="#contact" class="pc-btn" data-i18n="t_cta3">Choisir Elite</a>
+    </div>
+    <div class="pc rv rv-d3">
+      <div class="pc-tier" data-i18n="t4_tier">Sur mesure</div>
+      <div class="pc-price" id="p4-price" style="font-size:30px;padding-top:10px" data-i18n="t4_price">SUR<br>DEVIS</div>
+      <div class="pc-per" data-i18n="t4_per">projet unique / studio</div>
+      <div class="pc-div"></div>
+      <ul class="pc-feats">
+        <li class="yes" data-i18n="t4_f1">Brief personnalisé</li>
+        <li class="yes" data-i18n="t4_f2">Équipe & collaboration</li>
+        <li class="yes" data-i18n="t4_f3">Livraisons par étapes</li>
+        <li class="yes" data-i18n="t4_f4">Contrat professionnel</li>
+        <li class="yes" data-i18n="t4_f5">NDA possible</li>
+      </ul>
+      <a href="#contact" class="pc-btn" data-i18n="t_cta4">Me contacter</a>
+    </div>
+  </div>
+</section>
+
+<section id="comments">
+  <p class="s-label rv">// <span data-i18n="cmt_label">Avis & Commentaires</span></p>
+  <h2 class="s-title rv" data-i18n="cmt_title">CE QU'ILS<br>EN PENSENT</h2>
+  <div class="comments-layout">
+    <div class="comment-form rv">
+      <div class="cf-title" data-i18n="cf_title">Laisser un avis</div>
+      <div class="cf-group">
+        <label class="cf-label" data-i18n="cf_name_l">Pseudo / Nom</label>
+        <input class="cf-input" id="cf-name" type="text" placeholder="Votre pseudo">
+      </div>
+      <div class="cf-row">
+        <div class="cf-group">
+          <label class="cf-label" data-i18n="cf_proj_l">Projet commandé</label>
+          <select class="cf-select" id="cf-proj">
+            <option value="" data-i18n="cf_proj_ph">Choisir...</option>
+            <option>Starter</option><option>Pro</option><option>Elite</option><option>Sur mesure</option>
+          </select>
+        </div>
+        <div class="cf-group">
+          <label class="cf-label" data-i18n="cf_stars_l">Note</label>
+          <div class="stars-input" id="starsInput">
+            <button class="star-btn" data-v="1">★</button>
+            <button class="star-btn" data-v="2">★</button>
+            <button class="star-btn" data-v="3">★</button>
+            <button class="star-btn" data-v="4">★</button>
+            <button class="star-btn" data-v="5">★</button>
+          </div>
+        </div>
+      </div>
+      <div class="cf-group">
+        <label class="cf-label" data-i18n="cf_msg_l">Ton avis</label>
+        <textarea class="cf-textarea" id="cf-msg" placeholder="Dis ce que tu penses..."></textarea>
+      </div>
+      <button class="btn btn-g cf-submit" onclick="submitComment()" data-i18n="cf_submit">Publier l'avis →</button>
+      <!-- secret code reveal after submit -->
+      <div class="secret-reveal" id="secretReveal">
+        <div class="secret-reveal-label" data-i18n="secret_label">Ton code de suppression</div>
+        <div class="secret-code" id="secretCode"></div>
+        <div class="secret-warn" data-i18n="secret_warn">⚠ Note-le ! Il ne sera plus affiché ensuite. Tu en auras besoin pour supprimer ton avis.</div>
+      </div>
+    </div>
+    <div class="rv rv-d2">
+      <div class="cmt-sort-bar">
+        <span class="cmt-sort-label" data-i18n="sort_label">Tri :</span>
+        <button class="sort-btn active" onclick="setSort('best')" data-i18n="sort_best">Meilleurs</button>
+        <button class="sort-btn" onclick="setSort('recent')" data-i18n="sort_recent">Récents</button>
+        <button class="sort-btn" onclick="setSort('all')" data-i18n="sort_all">Tous</button>
+      </div>
+      <div id="cmt-list" class="comments-list"></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <p class="s-label rv">// <span data-i18n="contact_label">Contact</span></p>
+  <h2 class="s-title rv" data-i18n="contact_title">LANÇONS<br>TON PROJET</h2>
+  <div class="contact-grid">
+    <div class="rv">
+      <p data-i18n="contact_p">Tu as un projet en tête ? Une idée de map, un monde à construire, un niveau à concevoir ? Parle-moi de ton univers — je m'occupe du reste.</p>
+      <div class="c-links">
+        <a href="mailto:zayrho@email.com" class="c-link"><span class="c-link-icon">✉</span><span class="c-link-text">zayrho@email.com</span></a>
+        <a href="#" class="c-link"><span class="c-link-icon">💬</span><span class="c-link-text">Discord : Zayrho7</span></a>
+        <a href="#" class="c-link"><span class="c-link-icon">🐦</span><span class="c-link-text">Twitter / X : @Zayrho7</span></a>
+        <a href="#" class="c-link"><span class="c-link-icon">▶</span><span class="c-link-text">YouTube : Zayrho69</span></a>
+      </div>
+    </div>
+    <div class="contact-form rv rv-d2">
+      <div class="cf2-row">
+        <div class="cf2-group"><label class="cf2-label" data-i18n="c2_name">Pseudo</label><input class="cf2-input" type="text" placeholder="Votre pseudo"></div>
+        <div class="cf2-group"><label class="cf2-label" data-i18n="c2_email">Email</label><input class="cf2-input" type="email" placeholder="votre@email.com"></div>
+      </div>
+      <div class="cf2-group">
+        <label class="cf2-label" data-i18n="c2_type">Type de projet</label>
+        <select class="cf2-select">
+          <option data-i18n="c2_type_ph">Choisir une formule...</option>
+          <option>Starter — €20 / 4500 R$</option>
+          <option>Pro — €45 / 7500 R$</option>
+          <option>Elite — €150 / 25000 R$</option>
+          <option>Sur mesure / Custom</option>
+        </select>
+      </div>
+      <div class="cf2-group"><label class="cf2-label" data-i18n="c2_desc">Décrivez votre projet</label><textarea class="cf2-textarea" placeholder="Parlez-moi de votre univers, vos attentes, votre budget..."></textarea></div>
+      <button class="btn btn-g" style="width:100%;border:none" data-i18n="c2_send">Envoyer le brief →</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="f-logo">ZAY<b>RHO</b></div>
+  <div class="f-copy" data-i18n="footer_copy">© 2026 ZAYRHO — LEVEL DESIGNER & BUILDER</div>
+  <div class="f-copy" data-i18n="footer_rights">ALL RIGHTS RESERVED</div>
+</footer>
+
+<script>
+/* CURSOR */
+const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
+let mx=0,my=0,fx=0,fy=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function af(){fx+=(mx-fx)*.13;fy+=(my-fy)*.13;cur2.style.left=fx+'px';cur2.style.top=fy+'px';requestAnimationFrame(af)})();
+
+/* NAVBAR */
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('stuck',scrollY>60));
+
+/* SCROLL REVEAL */
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.08});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+
+/* CURRENCY */
+const prices={
+  eur:{p1:'<sup>€</sup>30',p2:'<sup>€</sup>75',p3:'<sup>€</sup>150'},
+  rbx:{p1:'<sup style="color:var(--rbx);font-size:18px">R$</sup>4 500',p2:'<sup style="color:var(--rbx);font-size:18px">R$</sup>7 500',p3:'<sup style="color:var(--rbx);font-size:18px">R$</sup>25 000'}
+};
+function setCurrency(c){
+  ['p1','p2','p3'].forEach(k=>{document.getElementById(k+'-price').innerHTML=prices[c][k]});
+  document.getElementById('btn-eur').classList.toggle('active',c==='eur');
+  document.getElementById('btn-rbx').classList.toggle('active',c==='rbx');
+  if(c==='rbx'){document.getElementById('btn-rbx').style.background='var(--rbx)';document.getElementById('btn-rbx').style.color='var(--bg)'}
+  else{document.getElementById('btn-rbx').style.background='';document.getElementById('btn-rbx').style.color=''}
+}
+
+/* TRANSLATIONS */
+const T={
+fr:{
+  nav_about:'À propos',nav_gallery:'Créations',nav_pricing:'Tarifs',nav_process:'Process',nav_reviews:'Avis',nav_contact:'Contact',
+  hero_eyebrow:'⟐ Level Designer & Game Builder',
+  hero_sub:'Je conçois des environnements de jeu immersifs, des maps uniques et des expériences qui captivent — du brief à la livraison.',
+  hero_cta1:'Voir les créations',hero_cta2:'Voir les tarifs',
+  stat1:'Maps créées',stat2:'Clients satisfaits',stat3:"Ans d'expérience",
+  about_chip:'Builder Pro',about_badge_l:'Builder',about_label:'À propos',
+  about_title:"L'ART DE<br>CONSTRUIRE",
+  about_p1:'Je suis <strong>Zayrho</strong>, level designer et builder passionné. Je crée des mondes qui racontent une histoire, des maps qui immergent le joueur dès la première seconde.',
+  about_p2:'Chaque projet est traité avec <strong>précision, créativité et rigueur</strong>. Pas de template générique — chaque build est pensé pour ton univers, tes joueurs, ton identité.',
+  sk1:'Level Design',sk2:'World Building',sk3:'Environmental Art',sk4:'Game Flow Design',sk5:'Décors & Ambiance',sk6:'Optimisation',
+  gal_label:'Créations',gal_title:"MES<br>RÉALISATIONS",
+  gal_hint:'↳ Pour ajouter tes images : place tes fichiers dans le même dossier que index.html, puis remplace "TON_IMAGE_X.jpg" par le vrai nom du fichier.',
+  ph_text:'Ajoute ton image ici',
+  p1_title:'VILLAGE ENNEIGÉ',p1_tag:'Simulateur / Cache Cache',
+  p2_title:'NEON DISTRICT',p2_tag:'Zone urbaine — Open World',
+  p3_title:'EDEN VALLEY',p3_tag:'Nature / Survival — Exploration',
+  p4_title:'WARZONE ARENA',p4_tag:'PvP compétitif — eSport ready',
+  p5_title:'ORBITAL BASE',p5_tag:'Sci-Fi — Environnement spatial',
+  p6_title:'ANCIENT RUINS',p6_tag:'Archéo / Aventure — Lore Design',
+  price_label:'Tarifs',price_title:"CHOISIR<br>SA FORMULE",
+  t1_tier:'Starter',t1_per:'par map / projet simple',t1_f1:'1 map personnalisée',t1_f2:'Thème au choix',t1_f3:'2 révisions incluses',t1_f4:'Livraison sous 5 jours',t1_f5:'Fichiers sources inclus',
+  t2_tier:'Pro',t2_per:'par projet élaboré',t2_f1:'Map détaillée & optimisée',t2_f2:'Ambiance / lore inclus',t2_f3:'4 révisions incluses',t2_f4:'Livraison sous 7 jours',t2_f5:'Fichiers sources inclus',
+  t3_tier:'Elite',t3_per:'projet complet',t3_f1:'Zone / monde entier',t3_f2:'Level design narratif',t3_f3:'Révisions illimitées',t3_f4:'Support post-livraison',t3_f5:'Fichiers sources inclus',
+  t4_tier:'Sur mesure',t4_per:'projet unique / studio',t4_price:'SUR<br>DEVIS',
+  t4_f1:'Brief personnalisé',t4_f2:'Équipe & collaboration',t4_f3:'Livraisons par étapes',t4_f4:'Contrat professionnel',t4_f5:'NDA possible',
+  hot_badge:'⭐ Populaire',t_cta1:'Commencer',t_cta2:'Choisir Pro',t_cta3:'Choisir Elite',t_cta4:'Me contacter',
+  proc_label:'Process',proc_title:"COMMENT<br>ÇA MARCHE",
+  step1_t:'Brief',step1_d:"Tu m'expliques ton projet, tes attentes, ton univers.",
+  step2_t:'Devis',step2_d:'Je te propose une formule adaptée et un délai précis.',
+  step3_t:'Design',step3_d:'Je commence la construction selon ton brief validé.',
+  step4_t:'Révisions',step4_d:"Tu valides, j'ajuste jusqu'à ce que ce soit parfait.",
+  step5_t:'Livraison',step5_d:"Tu reçois les fichiers finaux prêts à l'emploi.",
+  cmt_label:'Avis & Commentaires',cmt_title:"CE QU'ILS<br>EN PENSENT",
+  cf_title:'Laisser un avis',cf_name_l:'Pseudo / Nom',cf_proj_l:'Projet commandé',cf_proj_ph:'Choisir...',cf_stars_l:'Note',cf_msg_l:'Ton avis',cf_submit:"Publier l'avis →",
+  sort_label:'Tri',sort_best:'Meilleurs',sort_recent:'Récents',sort_all:'Tous',
+  mod_title:'Analyse en cours…',mod_sub:'Ton avis est vérifié avant publication pour garantir la qualité des retours.',
+  secret_label:'Ton code de suppression',secret_warn:'⚠ Note-le ! Tu en auras besoin pour supprimer ton avis.',
+  del_title:'Supprimer l\'avis',del_sub:'Entre le code secret reçu lors de la publication pour supprimer ton avis.',del_err:'Code incorrect. Réessaie.',del_cancel:'Annuler',del_confirm:'Supprimer',
+  featured_badge:'Avis mis en avant',del_my_review:'Supprimer mon avis',
+  contact_label:'Contact',contact_title:"LANÇONS<br>TON PROJET",
+  contact_p:"Tu as un projet en tête ? Une idée de map, un monde à construire, un niveau à concevoir ? Parle-moi de ton univers — je m'occupe du reste.",
+  c2_name:'Pseudo',c2_email:'Email',c2_type:'Type de projet',c2_type_ph:'Choisir une formule...',c2_desc:'Décrivez votre projet',c2_send:'Envoyer le brief →',
+  footer_copy:'© 2025 ZAYRHO — LEVEL DESIGNER & BUILDER',footer_rights:'ALL RIGHTS RESERVED',
+  mo:['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'],
+  no_rev:"Aucun avis approuvé pour l'instant — sois le premier !",
+  err_fill:"Merci de remplir ton pseudo et ton avis 😊",
+  rejected_msg:"Avis refusé : contenu non approprié (spam, insultes, hors sujet).",
+  mod_rejected:"Ton avis n'a pas pu être publié car il ne respecte pas nos critères (spam, insultes, contenu hors sujet). Essaie d'écrire un retour sincère sur ton expérience."
+},
+en:{
+  nav_about:'About',nav_gallery:'Work',nav_pricing:'Pricing',nav_process:'Process',nav_reviews:'Reviews',nav_contact:'Contact',
+  hero_eyebrow:'⟐ Level Designer & Game Builder',
+  hero_sub:"I design immersive game environments, unique maps and experiences that captivate — from brief to delivery.",
+  hero_cta1:'See my work',hero_cta2:'View pricing',
+  stat1:'Maps created',stat2:'Happy clients',stat3:'Years of exp.',
+  about_chip:'Pro Builder',about_badge_l:'Builder',about_label:'About',
+  about_title:"THE ART OF<br>BUILDING",
+  about_p1:'I am <strong>Zayrho</strong>, a passionate level designer and builder. I create worlds that tell a story, maps that immerse the player from the very first second.',
+  about_p2:'Every project is handled with <strong>precision, creativity and rigor</strong>. No generic templates — every build is designed for your universe, your players, your identity.',
+  sk1:'Level Design',sk2:'World Building',sk3:'Environmental Art',sk4:'Game Flow Design',sk5:'Décor & Atmosphere',sk6:'Optimisation',
+  gal_label:'Work',gal_title:"MY<br>CREATIONS",
+  gal_hint:'↳ To add your images: place your files in the same folder as index.html, then replace "YOUR_IMAGE_X.jpg" with the exact filename.',
+  ph_text:'Add your image here',
+  p1_title:'SNOWY VILLAGE',p1_tag:'Simulator / Hide and Seek',
+  p2_title:'NEON DISTRICT',p2_tag:'Urban zone — Open World',
+  p3_title:'EDEN VALLEY',p3_tag:'Nature / Survival — Exploration',
+  p4_title:'WARZONE ARENA',p4_tag:'Competitive PvP — eSport ready',
+  p5_title:'ORBITAL BASE',p5_tag:'Sci-Fi — Space environment',
+  p6_title:'ANCIENT RUINS',p6_tag:'Archaeology / Adventure — Lore Design',
+  price_label:'Pricing',price_title:"CHOOSE<br>YOUR PLAN",
+  t1_tier:'Starter',t1_per:'per map / simple project',t1_f1:'1 custom map',t1_f2:'Theme of your choice',t1_f3:'2 revisions included',t1_f4:'Delivery within 5 days',t1_f5:'Source files included',
+  t2_tier:'Pro',t2_per:'per advanced project',t2_f1:'Detailed & optimised map',t2_f2:'Atmosphere / lore included',t2_f3:'4 revisions included',t2_f4:'Delivery within 7 days',t2_f5:'Source files included',
+  t3_tier:'Elite',t3_per:'full project',t3_f1:'Full zone / world',t3_f2:'Narrative level design',t3_f3:'Unlimited revisions',t3_f4:'Post-delivery support',t3_f5:'Source files included',
+  t4_tier:'Custom',t4_per:'unique project / studio',t4_price:'QUOTE<br>ON REQ.',
+  t4_f1:'Custom brief',t4_f2:'Team & collaboration',t4_f3:'Milestone deliveries',t4_f4:'Professional contract',t4_f5:'NDA available',
+  hot_badge:'⭐ Popular',t_cta1:'Get started',t_cta2:'Choose Pro',t_cta3:'Choose Elite',t_cta4:'Contact me',
+  proc_label:'Process',proc_title:"HOW IT<br>WORKS",
+  step1_t:'Brief',step1_d:'Tell me about your project, expectations and universe.',
+  step2_t:'Quote',step2_d:'I propose a suitable plan and a precise deadline.',
+  step3_t:'Design',step3_d:'I start building based on your approved brief.',
+  step4_t:'Revisions',step4_d:"You review, I adjust until it's perfect.",
+  step5_t:'Delivery',step5_d:'You receive the final files ready to use.',
+  cmt_label:'Reviews & Comments',cmt_title:"WHAT THEY<br>SAY",
+  cf_title:'Leave a review',cf_name_l:'Username / Name',cf_proj_l:'Project ordered',cf_proj_ph:'Choose...',cf_stars_l:'Rating',cf_msg_l:'Your review',cf_submit:'Publish review →',
+  sort_label:'Sort',sort_best:'Best',sort_recent:'Recent',sort_all:'All',
+  mod_title:'Analysing…',mod_sub:'Your review is being checked before publication to ensure quality.',
+  secret_label:'Your deletion code',secret_warn:'⚠ Save it! You will need it to delete your review later.',
+  del_title:'Delete review',del_sub:'Enter the secret code you received when you published your review.',del_err:'Wrong code. Try again.',del_cancel:'Cancel',del_confirm:'Delete',
+  featured_badge:'Featured review',del_my_review:'Delete my review',
+  contact_label:'Contact',contact_title:"LET'S START<br>YOUR PROJECT",
+  contact_p:"Got a project in mind? A map idea, a world to build, a level to design? Tell me about your universe — I'll handle the rest.",
+  c2_name:'Username',c2_email:'Email',c2_type:'Project type',c2_type_ph:'Choose a plan...',c2_desc:'Describe your project',c2_send:'Send the brief →',
+  footer_copy:'© 2026 ZAYRHO — LEVEL DESIGNER & BUILDER',footer_rights:'ALL RIGHTS RESERVED',
+  mo:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+  no_rev:"No approved reviews yet — be the first!",
+  err_fill:"Please fill in your name and review 😊",
+  rejected_msg:"Review rejected: inappropriate content (spam, insults, off-topic).",
+  mod_rejected:"Your review couldn't be published as it doesn't meet our guidelines (spam, insults, off-topic). Try writing a genuine account of your experience."
+}};
+
+let lang='fr';
+function setLang(l){
+  lang=l;
+  document.getElementById('btn-fr').classList.toggle('active',l==='fr');
+  document.getElementById('btn-en').classList.toggle('active',l==='en');
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    if(T[l][k]!==undefined)el.innerHTML=T[l][k];
+  });
+  renderComments();
+}
+
+/* STARS */
+let rating=0;
+document.querySelectorAll('.star-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    rating=+btn.getAttribute('data-v');
+    document.querySelectorAll('.star-btn').forEach((b,i)=>b.classList.toggle('on',i<rating));
+  });
+  btn.addEventListener('mouseenter',()=>{
+    const v=+btn.getAttribute('data-v');
+    document.querySelectorAll('.star-btn').forEach((b,i)=>b.classList.toggle('on',i<v));
+  });
+  btn.parentElement.addEventListener('mouseleave',()=>{
+    document.querySelectorAll('.star-btn').forEach((b,i)=>b.classList.toggle('on',i<rating));
+  });
+});
+
+/* COMMENTS DATA */
+let comments=[
+  {id:'c001',name:'Axel_R',proj:'Pro',stars:5,text:{fr:"Zayrho a livré une map d'une qualité incroyable. L'ambiance, les détails, le flow du level — tout était parfait. Je recommande sans hésiter.",en:"Zayrho delivered a map of incredible quality. The atmosphere, the details, the level flow — everything was perfect. I recommend without hesitation."},date:new Date(2025,2,14),score:97,code:'ZAY-A01'},
+  {id:'c002',name:'MKcraft',proj:'Elite',stars:5,text:{fr:"Très réactif, professionnel et créatif. Il a su interpréter mon brief et l'a transformé en quelque chose que je n'aurais pas imaginé moi-même.",en:"Very responsive, professional and creative. He managed to interpret my brief and transform it into something I wouldn't have imagined myself."},date:new Date(2025,1,3),score:94,code:'ZAY-M02'},
+  {id:'c003',name:'Skylord',proj:'Pro',stars:5,text:{fr:"Deuxième commande déjà. Les joueurs sont fous de la carte. Le niveau de détail est incroyable pour le prix.",en:"Second order already. Players are in love with the map. The level of detail is incredible for the price."},date:new Date(2024,11,20),score:91,code:'ZAY-S03'},
+];
+
+let currentSort='best';
+let deleteTargetId=null;
+
+/* SORT */
+function setSort(s){
+  currentSort=s;
+  document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderComments();
+}
+
+function getSorted(){
+  let list=[...comments];
+  if(currentSort==='best') list.sort((a,b)=>b.score-a.score||(b.stars-a.stars));
+  else if(currentSort==='recent') list.sort((a,b)=>b.date-a.date);
+  // 'all' = insertion order
+  return list;
+}
+
+function renderComments(){
+  const list=document.getElementById('cmt-list');
+  const mo=T[lang].mo;
+  const sorted=getSorted();
+  if(!sorted.length){list.innerHTML=`<div class="no-comments">${T[lang].no_rev}</div>`;return;}
+  const topScore=sorted.length?sorted[0].score:0;
+  list.innerHTML=sorted.map((c,i)=>{
+    const featured=c.score>=90&&i===0;
+    const txt=typeof c.text==='object'?c.text[lang]||c.text.fr||c.text:c.text;
+    return `<div class="cmt${featured?' featured':''}" id="cmt-${c.id}">
+      ${featured?`<div class="cmt-featured-badge">${T[lang].featured_badge}</div>`:''}
+      <div class="cmt-header">
+        <div class="cmt-author">
+          <div class="cmt-av">${c.name.slice(0,2).toUpperCase()}</div>
+          <div><div class="cmt-name">${esc(c.name)}</div><div class="cmt-date">${c.date.getDate()} ${mo[c.date.getMonth()]} ${c.date.getFullYear()}</div></div>
+        </div>
+        <div class="cmt-meta">
+          <div class="cmt-stars">${'★'.repeat(c.stars)}</div>
+          <button class="cmt-del-btn" style="display:block" onclick="openDelModal('${c.id}')">${T[lang].del_my_review}</button>
+        </div>
+      </div>
+      <div class="cmt-text">"${esc(txt)}"</div>
+      ${c.proj?`<div class="cmt-tag">${esc(c.proj)}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+/* DELETE MODAL */
+function openDelModal(id){
+  deleteTargetId=id;
+  document.getElementById('delCodeInput').value='';
+  document.getElementById('delError').style.display='none';
+  document.getElementById('delModal').style.display='flex';
+}
+function closeDelModal(){
+  document.getElementById('delModal').style.display='none';
+  deleteTargetId=null;
+}
+function confirmDelete(){
+  const entered=document.getElementById('delCodeInput').value.trim().toUpperCase();
+  const c=comments.find(x=>x.id===deleteTargetId);
+  if(!c){closeDelModal();return;}
+  if(entered===c.code.toUpperCase()){
+    comments=comments.filter(x=>x.id!==deleteTargetId);
+    closeDelModal();
+    renderComments();
+  } else {
+    document.getElementById('delError').textContent=T[lang].del_err;
+    document.getElementById('delError').style.display='block';
+  }
+}
+
+/* GENERATE SECRET CODE */
+function genCode(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let c='ZAY-';
+  for(let i=0;i<4;i++) c+=chars[Math.floor(Math.random()*chars.length)];
+  return c;
+}
+
+/* AI MODERATION */
+async function moderateComment(name,text,stars){
+  const prompt=`Tu es un modérateur pour le portfolio de Zayrho, un level designer de jeux vidéo.
+Analyse cet avis client et réponds UNIQUEMENT en JSON avec ce format exact:
+{"approved": true/false, "score": 0-100, "reason": "courte raison"}
+
+Règles d'approbation:
+- REFUSER si: spam, insultes, contenu hors sujet, faux avis évident, caractères aléatoires, texte vide de sens, publicité non liée
+- REFUSER si le texte fait moins de 8 mots pertinents
+- APPROUVER si: retour sincère sur un service de level design / map / création de jeu
+- Le score reflète la qualité et l'utilité de l'avis (0=très mauvais, 100=excellent)
+- Score élevé (80+) = avis détaillé, sincère, utile. Score moyen (50-79) = avis court mais honnête. Score bas (<50) = avis vague ou peu utile mais acceptable.
+
+Avis à analyser:
+Pseudo: ${name}
+Note: ${stars}/5 étoiles
+Texte: "${text}"`;
+
+  const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:150,
+      messages:[{role:'user',content:prompt}]
+    })
+  });
+  const data=await resp.json();
+  const raw=data.content?.map(b=>b.text||'').join('').trim();
+  try{
+    const clean=raw.replace(/```json|```/g,'').trim();
+    return JSON.parse(clean);
+  }catch(e){
+    return {approved:true,score:60,reason:'parse error fallback'};
+  }
+}
+
+/* SUBMIT */
+async function submitComment(){
+  const name=document.getElementById('cf-name').value.trim();
+  const proj=document.getElementById('cf-proj').value;
+  const msg=document.getElementById('cf-msg').value.trim();
+  if(!name||!msg){alert(T[lang].err_fill);return;}
+
+  // Show moderation overlay
+  document.getElementById('modOverlay').style.display='flex';
+  document.getElementById('secretReveal').style.display='none';
+
+  let result={approved:true,score:60};
+  try{
+    result=await moderateComment(name,msg,rating||5);
+  }catch(e){
+    result={approved:true,score:60};
+  }
+
+  document.getElementById('modOverlay').style.display='none';
+
+  if(!result.approved){
+    alert(T[lang].mod_rejected);
+    return;
+  }
+
+  const code=genCode();
+  const newCmt={
+    id:'u-'+Date.now(),
+    name,proj,
+    stars:rating||5,
+    text:msg,
+    date:new Date(),
+    score:result.score||60,
+    code
+  };
+  comments.unshift(newCmt);
+
+  // Reset form
+  document.getElementById('cf-name').value='';
+  document.getElementById('cf-msg').value='';
+  document.getElementById('cf-proj').selectedIndex=0;
+  rating=0;
+  document.querySelectorAll('.star-btn').forEach(b=>b.classList.remove('on'));
+
+  // Show secret code
+  document.getElementById('secretCode').textContent=code;
+  document.getElementById('secretReveal').style.display='block';
+
+  renderComments();
+  document.getElementById('cmt-list').scrollIntoView({behavior:'smooth'});
+}
+
+renderComments();
+</script>
+
+<script>
+const _origSetLang=window.setLang;
+window.setLang=function(l){
+  _origSetLang(l);
+  const labels={fr:'Parler à l\'IA',en:'Talk to AI'};
+  const el=document.getElementById('aiFabLabel');
+  if(el)el.textContent=labels[l]||labels.fr;
+};
+const _origTfr=T.fr;
+const _origTen=T.en;
+T.fr.nav_ai='✦ Assistant IA';
+T.en.nav_ai='✦ AI Assistant';
+</script>
+</body>
+</html>
