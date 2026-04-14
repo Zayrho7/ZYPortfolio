@@ -585,20 +585,12 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:36px
       </div>
     </div>
    
-<style>
-  /* Ton code CSS va ici */
-  body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; }
-  main { flex: 1; }
-  footer { 
-    width: 100%; display: flex; justify-content: space-between; 
-    align-items: center; padding: 30px 50px; background: #0a0a0a; 
-    border-top: 1px solid rgba(255, 215, 0, 0.1); box-sizing: border-box; 
-  }
-  .f-logo { color: #fff; font-size: 1.2rem; }
-  .f-logo b { color: #ffcc00; }
-  .f-copy { color: #666; font-size: 0.9rem; }
-  @media (max-width: 768px) { footer { flex-direction: column; gap: 15px; text-align: center; } }
-</style>
+<footer>
+  <div class="f-logo">ZAY<b>RHO</b></div>
+  <div class="f-copy" data-i18n="footer_copy">© 2026 ZAYRHO — LEVEL DESIGNER & BUILDER</div>
+  <div class="f-copy" data-i18n="footer_rights">ALL RIGHTS RESERVED</div>
+</footer>
+
 <script>
 /* CURSOR */
 const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
