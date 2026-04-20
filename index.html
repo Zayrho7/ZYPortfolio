@@ -1,207 +1,748 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zayrho | Roblox Builder Elite</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Syncopate:wght@700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #050505;
-            --accent: #00ffaa; /* Le vert néon de ton image */
-            --card: #111111;
-            --text: #ffffff;
-            --text-dim: #a0a0a0;
-        }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Zayrho7 — Roblox Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0c0c;
+  --bg1:#111;
+  --bg2:#161616;
+  --bg3:#1c1c1c;
+  --white:#f0ece4;
+  --dim:#666;
+  --dim2:#3a3a3a;
+  --accent:#d4c5a9;
+  --hi:#fff;
+  --sans:'Space Grotesk',sans-serif;
+  --mono:'Space Mono',monospace;
+  --border:1px solid rgba(255,255,255,0.07);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:var(--sans);overflow-x:hidden;line-height:1.6}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); color: var(--text); scroll-behavior: smooth; }
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--dim2)}
 
-        /* NAVIGATION */
-        nav {
-            position: fixed; top: 0; width: 100%; padding: 20px 5%;
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(10px); z-index: 100;
-            border-bottom: 1px solid #222;
-        }
-        .logo { font-family: 'Syncopate', sans-serif; font-size: 1.5rem; color: var(--accent); }
-        .nav-controls { display: flex; gap: 15px; }
-        .btn-switch { 
-            background: #1a1a1a; border: 1px solid #333; color: white; 
-            padding: 8px 15px; cursor: pointer; border-radius: 5px; font-size: 0.8rem;
-        }
-        .btn-switch.active { border-color: var(--accent); color: var(--accent); }
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 60px;height:60px;
+  border-bottom:var(--border);
+  background:rgba(12,12,12,0.92);
+  backdrop-filter:blur(20px);
+}
+.nav-logo{font-family:var(--mono);font-size:13px;letter-spacing:.1em;color:var(--white);text-decoration:none;font-weight:700}
+.nav-links{display:flex;gap:40px;list-style:none}
+.nav-links a{font-size:12px;letter-spacing:.08em;color:var(--dim);text-decoration:none;transition:color .2s;font-weight:500}
+.nav-links a:hover{color:var(--white)}
+.controls{display:flex;gap:6px}
+.ctrl{
+  font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  padding:6px 12px;border:var(--border);background:transparent;
+  color:var(--dim);cursor:pointer;border-radius:3px;transition:all .2s;
+}
+.ctrl.on{background:var(--white);color:var(--bg);border-color:var(--white)}
+.ctrl:hover:not(.on){color:var(--white);border-color:rgba(255,255,255,0.2)}
 
-        /* HERO SECTION */
-        .hero {
-            height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            text-align: center; padding: 0 10%; background: radial-gradient(circle at center, #00ffaa15 0%, transparent 70%);
-        }
-        .hero h1 { font-family: 'Syncopate', sans-serif; font-size: 5rem; line-height: 1; margin-bottom: 20px; }
-        .hero span { color: var(--accent); }
-        .hero p { color: var(--text-dim); max-width: 600px; font-size: 1.1rem; }
+/* ── HERO ── */
+#hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:flex-end;padding:0 60px 80px;
+  position:relative;overflow:hidden;
+}
+.hero-lines{
+  position:absolute;top:0;left:0;right:0;bottom:0;
+  background-image:repeating-linear-gradient(
+    90deg,rgba(255,255,255,0.02) 0,rgba(255,255,255,0.02) 1px,
+    transparent 1px,transparent calc(100%/12)
+  );
+  pointer-events:none;
+}
+.hero-tag{
+  font-family:var(--mono);font-size:11px;letter-spacing:.15em;
+  color:var(--dim);margin-bottom:32px;display:flex;align-items:center;gap:12px;
+}
+.hero-tag::before{content:'';width:32px;height:1px;background:var(--dim)}
+.hero-h1{
+  font-size:clamp(64px,10vw,140px);font-weight:700;
+  line-height:.95;letter-spacing:-.04em;
+  color:var(--hi);margin-bottom:40px;
+}
+.hero-h1 em{font-style:normal;color:var(--dim)}
+.hero-bottom{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:32px}
+.hero-desc{max-width:440px;font-size:16px;color:var(--dim);line-height:1.75;font-weight:300}
+.hero-cta-row{display:flex;gap:12px;flex-wrap:wrap}
+.btn{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  padding:14px 28px;border:var(--border);background:transparent;
+  color:var(--white);cursor:pointer;border-radius:3px;transition:all .25s;
+  text-decoration:none;display:inline-block;
+}
+.btn:hover{background:var(--white);color:var(--bg)}
+.btn-fill{background:var(--white);color:var(--bg);border-color:var(--white)}
+.btn-fill:hover{background:var(--accent);border-color:var(--accent)}
 
-        /* STATS BAR */
-        .stats-bar {
-            display: flex; justify-content: space-around; padding: 50px 5%;
-            background: var(--card); border-top: 1px solid #222; border-bottom: 1px solid #222;
-        }
-        .stat-item h3 { font-size: 2.5rem; color: var(--accent); }
-        .stat-item p { color: var(--text-dim); text-transform: uppercase; font-size: 0.7rem; letter-spacing: 2px; }
+/* ── SECTION BASE ── */
+.section{padding:120px 60px;max-width:1400px;margin:0 auto}
+.s-eyebrow{
+  font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+  color:var(--dim);display:flex;align-items:center;gap:10px;margin-bottom:48px;
+}
+.s-eyebrow::after{content:'';flex:1;height:1px;background:var(--dim2);max-width:60px}
+.s-title{font-size:clamp(32px,4vw,52px);font-weight:600;letter-spacing:-.03em;line-height:1.1;margin-bottom:16px}
 
-        /* PORTFOLIO */
-        section { padding: 100px 10%; }
-        .section-title { font-family: 'Syncopate', sans-serif; font-size: 2rem; margin-bottom: 50px; text-align: center; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        .project-card { 
-            background: var(--card); border-radius: 15px; overflow: hidden; 
-            transition: 0.3s; border: 1px solid #222;
-        }
-        .project-card:hover { transform: translateY(-10px); border-color: var(--accent); }
-        .project-img { width: 100%; height: 200px; background: #222; }
+/* ── STATS ROW ── */
+.stats-row{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  border-top:var(--border);border-left:var(--border);
+}
+.stat-cell{
+  padding:48px 40px;border-right:var(--border);border-bottom:var(--border);
+}
+.stat-num{font-size:clamp(36px,5vw,64px);font-weight:700;letter-spacing:-.04em;color:var(--hi);line-height:1}
+.stat-label{font-size:13px;color:var(--dim);margin-top:8px;font-weight:400}
 
-        /* REVIEWS SYSTEM */
-        .review-system { background: var(--card); border-radius: 20px; padding: 40px; border: 1px solid #222; }
-        .review-form { display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px; }
-        .review-form input, .review-form textarea {
-            background: #050505; border: 1px solid #333; padding: 15px; color: white; border-radius: 10px;
-        }
-        .btn-post { background: var(--accent); color: black; font-weight: bold; padding: 15px; border: none; border-radius: 10px; cursor: pointer; }
-        .reviews-list { display: flex; flex-direction: column; gap: 20px; }
-        .review-item { 
-            background: #1a1a1a; padding: 20px; border-radius: 10px; 
-            position: relative; animation: fadeIn 0.5s ease;
-        }
-        .review-item h4 { color: var(--accent); margin-bottom: 5px; }
-        .btn-delete { 
-            position: absolute; top: 20px; right: 20px; background: #ff4444; 
-            color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.7rem;
-        }
+/* ── SERVICES ── */
+.services-list{border-top:var(--border)}
+.svc-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:32px 0;border-bottom:var(--border);gap:24px;
+  transition:padding .25s;cursor:default;
+}
+.svc-row:hover{padding:32px 16px}
+.svc-num{font-family:var(--mono);font-size:11px;color:var(--dim);min-width:36px}
+.svc-name{font-size:clamp(18px,2.5vw,26px);font-weight:500;letter-spacing:-.02em;flex:1}
+.svc-desc{font-size:13px;color:var(--dim);max-width:340px;line-height:1.6;text-align:right}
+.svc-arr{font-size:20px;color:var(--dim);transition:transform .2s,color .2s}
+.svc-row:hover .svc-arr{transform:translateX(6px);color:var(--white)}
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+/* ── CREATIONS GALLERY ── */
+.gallery-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:48px;flex-wrap:wrap;gap:16px}
+.gallery-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:2px;
+}
+.gallery-item{
+  position:relative;background:var(--bg2);overflow:hidden;
+  aspect-ratio:16/10;cursor:pointer;
+}
+.gallery-item-inner{
+  width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:12px;
+  background:var(--bg3);border:var(--border);
+  transition:background .3s;
+}
+.gallery-item:hover .gallery-item-inner{background:var(--bg2)}
+.gallery-placeholder{
+  width:48px;height:48px;border:var(--border);border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;color:var(--dim2);transition:color .3s;
+}
+.gallery-item:hover .gallery-placeholder{color:var(--dim)}
+.gallery-add-label{font-size:11px;color:var(--dim2);font-family:var(--mono);letter-spacing:.08em;transition:color .3s}
+.gallery-item:hover .gallery-add-label{color:var(--dim)}
+.gallery-item.has-img img{width:100%;height:100%;object-fit:cover;display:block}
+.gallery-item.has-img .gallery-overlay{
+  position:absolute;inset:0;background:rgba(0,0,0,0);
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:20px;transition:background .3s;
+}
+.gallery-item.has-img:hover .gallery-overlay{background:rgba(0,0,0,0.55)}
+.gallery-overlay-text{opacity:0;transform:translateY(8px);transition:all .3s}
+.gallery-item.has-img:hover .gallery-overlay-text{opacity:1;transform:none}
+.overlay-title{font-size:15px;font-weight:600;color:#fff}
+.overlay-tag{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.1em;margin-top:4px}
 
-        /* DISCORD BLOCKQUOTE STYLING */
-        .discord-warning {
-            border-left: 4px solid #ff4444; background: #1a0505; padding: 20px; margin-top: 50px; border-radius: 0 10px 10px 0;
-        }
-    </style>
+/* Upload zone */
+.gallery-upload-zone{
+  grid-column:1/-1;
+  border:1px dashed var(--dim2);padding:40px;text-align:center;
+  border-radius:3px;cursor:pointer;transition:border-color .2s,background .2s;
+}
+.gallery-upload-zone:hover{border-color:var(--dim);background:var(--bg2)}
+.gallery-upload-zone p{font-size:13px;color:var(--dim);font-family:var(--mono);letter-spacing:.08em}
+.gallery-upload-zone small{font-size:11px;color:var(--dim2);display:block;margin-top:6px}
+#file-input{display:none}
+
+/* Modal */
+.modal-bg{
+  display:none;position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.85);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;padding:24px;
+}
+.modal-bg.open{display:flex}
+.modal{
+  background:var(--bg2);border:var(--border);border-radius:4px;
+  padding:32px;width:100%;max-width:480px;position:relative;
+}
+.modal h3{font-size:18px;font-weight:600;margin-bottom:24px;letter-spacing:-.02em}
+.modal input,.modal select{
+  width:100%;background:var(--bg3);border:var(--border);
+  color:var(--white);font-family:var(--sans);font-size:14px;
+  padding:10px 14px;border-radius:3px;margin-bottom:12px;outline:none;
+}
+.modal input:focus,.modal select:focus{border-color:rgba(255,255,255,.2)}
+.modal-actions{display:flex;gap:8px;margin-top:8px;justify-content:flex-end}
+.modal-close{
+  position:absolute;top:16px;right:16px;background:transparent;
+  border:none;color:var(--dim);cursor:pointer;font-size:18px;font-family:var(--sans);
+  transition:color .2s;
+}
+.modal-close:hover{color:var(--white)}
+
+/* ── PRICING ── */
+.pricing-controls{display:flex;gap:6px;margin-bottom:48px}
+.pricing-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border:var(--border);background:rgba(255,255,255,0.04);gap:1px;
+}
+@media(max-width:1000px){.pricing-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:580px){.pricing-grid{grid-template-columns:1fr}}
+.plan{background:var(--bg1);padding:40px 32px;display:flex;flex-direction:column;position:relative}
+.plan.pop{background:var(--bg2)}
+.pop-badge{
+  position:absolute;top:0;left:32px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.15em;
+  background:var(--white);color:var(--bg);
+  padding:3px 10px;transform:translateY(-50%);border-radius:2px;
+}
+.plan-name{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--dim);margin-bottom:28px}
+.plan-amount{
+  font-size:clamp(36px,4vw,54px);font-weight:700;letter-spacing:-.04em;
+  color:var(--hi);line-height:1;margin-bottom:4px;
+  transition:color .25s,transform .25s;
+}
+.plan-amount .cur{font-size:.42em;font-weight:400;color:var(--dim);vertical-align:super}
+.plan-amount.custom{font-size:clamp(22px,3vw,34px);line-height:1.2}
+.plan-sub{font-size:12px;color:var(--dim);letter-spacing:.04em;margin-bottom:32px;font-family:var(--mono)}
+.plan-sep{height:1px;background:rgba(255,255,255,0.07);margin-bottom:28px}
+.plan-feats{list-style:none;display:flex;flex-direction:column;gap:12px;flex:1}
+.plan-feats li{font-size:14px;color:var(--dim);display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.plan-feats li.yes{color:var(--white)}
+.plan-feats li.yes::before{content:'↳';color:var(--dim);font-family:var(--mono);font-size:12px;margin-top:1px;flex-shrink:0}
+.plan-feats li.no::before{content:'–';color:var(--dim2);font-family:var(--mono);font-size:12px;flex-shrink:0}
+.plan-btn{
+  margin-top:32px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  padding:13px;width:100%;border:var(--border);background:transparent;
+  color:var(--dim);cursor:pointer;transition:all .2s;border-radius:3px;
+}
+.plan-btn:hover,.plan-btn.hi{border-color:var(--white);color:var(--white)}
+.plan-btn.hi{background:var(--white);color:var(--bg)}
+.plan-btn.hi:hover{background:var(--accent);border-color:var(--accent)}
+
+/* ── ABOUT ── */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+@media(max-width:768px){.about-grid{grid-template-columns:1fr}}
+.about-body{font-size:16px;color:var(--dim);line-height:1.8;font-weight:300}
+.about-body+.about-body{margin-top:20px}
+.skills-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-top:40px}
+.skill-chip{
+  font-family:var(--mono);font-size:11px;letter-spacing:.08em;
+  padding:6px 14px;border:var(--border);color:var(--dim);border-radius:3px;
+}
+.about-aside{border-left:var(--border);padding-left:48px}
+.aside-block{margin-bottom:40px}
+.aside-label{font-family:var(--mono);font-size:10px;color:var(--dim2);letter-spacing:.15em;margin-bottom:10px}
+.aside-val{font-size:22px;font-weight:600;letter-spacing:-.02em;color:var(--hi)}
+.aside-note{font-size:13px;color:var(--dim);margin-top:4px}
+
+/* ── CONTACT ── */
+.contact-wrap{border:var(--border);padding:80px 60px;text-align:center}
+.contact-title{font-size:clamp(36px,6vw,80px);font-weight:700;letter-spacing:-.04em;line-height:1;margin-bottom:24px}
+.contact-sub{font-size:16px;color:var(--dim);max-width:460px;margin:0 auto 48px;font-weight:300}
+.contact-links{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.contact-card{
+  display:flex;align-items:center;gap:12px;padding:16px 24px;
+  border:var(--border);border-radius:3px;text-decoration:none;
+  color:var(--white);transition:all .2s;background:var(--bg2);
+}
+.contact-card:hover{background:var(--bg3);border-color:rgba(255,255,255,.18)}
+.cc-label{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:.1em;display:block}
+.cc-val{font-size:14px;font-weight:500;display:block;margin-top:2px}
+
+/* ── FOOTER ── */
+footer{
+  border-top:var(--border);padding:28px 60px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+}
+footer span{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:.08em}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  nav{padding:0 24px}
+  .nav-links{display:none}
+  .section{padding:80px 24px}
+  #hero{padding:0 24px 60px}
+  .stats-row{grid-template-columns:1fr}
+  .svc-desc{display:none}
+  .about-aside{border-left:none;padding-left:0;border-top:var(--border);padding-top:40px}
+  .contact-wrap{padding:48px 24px}
+  footer{padding:24px}
+}
+</style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">ZAYRHO</div>
-        <div class="nav-controls">
-            <button class="btn-switch active" onclick="switchCurrency('eur', this)">€ EUR</button>
-            <button class="btn-switch" onclick="switchCurrency('robux', this)">R$ ROBUX</button>
-            <button class="btn-switch active" onclick="switchLang('fr', this)">FR</button>
-            <button class="btn-switch" onclick="switchLang('en', this)">EN</button>
-        </div>
-    </nav>
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">ZRH7</a>
+  <ul class="nav-links">
+    <li><a href="#services"  data-fr="Services"   data-en="Services">Services</a></li>
+    <li><a href="#works"     data-fr="Créations"   data-en="Works">Créations</a></li>
+    <li><a href="#pricing"   data-fr="Tarifs"      data-en="Pricing">Tarifs</a></li>
+    <li><a href="#about"     data-fr="À propos"    data-en="About">À propos</a></li>
+    <li><a href="#contact"   data-fr="Contact"     data-en="Contact">Contact</a></li>
+  </ul>
+  <div class="controls">
+    <button class="ctrl on" id="btn-fr" onclick="setLang('fr')">FR</button>
+    <button class="ctrl"    id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
+</nav>
 
-    <div class="hero">
-        <h1 data-fr="BUILDER <span>ELITE</span>" data-en="<span>ELITE</span> BUILDER">BUILDER <span>ELITE</span></h1>
-        <p data-fr="Je crée des environnements immersifs et haute performance pour vos jeux Roblox." 
-           data-en="I create immersive and high-performance environments for your Roblox games.">
-           Je crée des environnements immersifs et haute performance pour vos jeux Roblox.
-        </p>
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-lines"></div>
+  <div class="hero-tag" data-fr="Roblox Builder Professionnel" data-en="Professional Roblox Builder">Roblox Builder Professionnel</div>
+  <h1 class="hero-h1">ZAYR<em>HO7</em></h1>
+  <div class="hero-bottom">
+    <p class="hero-desc"
+       data-fr="Je conçois des maps Roblox immersives — du projet simple au monde entier. Précis, ponctuel, soigné."
+       data-en="I design immersive Roblox maps — from simple projects to entire worlds. Precise, on time, polished.">
+      Je conçois des maps Roblox immersives — du projet simple au monde entier. Précis, ponctuel, soigné.
+    </p>
+    <div class="hero-cta-row">
+      <a href="#works"   class="btn btn-fill" data-fr="Voir mes créations" data-en="View my work">Voir mes créations</a>
+      <a href="#contact" class="btn"          data-fr="Me contacter"       data-en="Contact me">Me contacter</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat-cell">
+    <div class="stat-num">50+</div>
+    <div class="stat-label" data-fr="Projets livrés" data-en="Projects delivered">Projets livrés</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-num">3+</div>
+    <div class="stat-label" data-fr="Années d'expérience" data-en="Years of experience">Années d'expérience</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-num">100%</div>
+    <div class="stat-label" data-fr="Clients satisfaits" data-en="Satisfied clients">Clients satisfaits</div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services" class="section">
+  <div class="reveal">
+    <p class="s-eyebrow" data-fr="CE QUE JE FAIS" data-en="WHAT I DO">CE QUE JE FAIS</p>
+  </div>
+  <div class="services-list reveal">
+    <div class="svc-row">
+      <span class="svc-num">01</span>
+      <span class="svc-name" data-fr="Map personnalisée" data-en="Custom map">Map personnalisée</span>
+      <span class="svc-desc" data-fr="RP, obby, simulateur — chaque détail est soigné selon votre thème." data-en="RP, obby, simulator — every detail crafted to match your theme.">RP, obby, simulateur — chaque détail est soigné selon votre thème.</span>
+      <span class="svc-arr">→</span>
+    </div>
+    <div class="svc-row">
+      <span class="svc-num">02</span>
+      <span class="svc-name" data-fr="Level design" data-en="Level design">Level design</span>
+      <span class="svc-desc" data-fr="Zones cohérentes, flux de gameplay fluide, architecture narrative." data-en="Coherent zones, smooth gameplay flow, narrative architecture.">Zones cohérentes, flux de gameplay fluide, architecture narrative.</span>
+      <span class="svc-arr">→</span>
+    </div>
+    <div class="svc-row">
+      <span class="svc-num">03</span>
+      <span class="svc-name" data-fr="Ambiance & lore" data-en="Atmosphere & lore">Ambiance & lore</span>
+      <span class="svc-desc" data-fr="Éclairages, textures, décors — une identité visuelle forte pour votre jeu." data-en="Lighting, textures, scenery — a strong visual identity for your game.">Éclairages, textures, décors — une identité visuelle forte pour votre jeu.</span>
+      <span class="svc-arr">→</span>
+    </div>
+    <div class="svc-row">
+      <span class="svc-num">04</span>
+      <span class="svc-name" data-fr="Optimisation" data-en="Optimization">Optimisation</span>
+      <span class="svc-desc" data-fr="Maps fluides même en surcharge — perf & expérience joueur au top." data-en="Smooth maps even under load — peak performance & player experience.">Maps fluides même en surcharge — perf & expérience joueur au top.</span>
+      <span class="svc-arr">→</span>
+    </div>
+    <div class="svc-row">
+      <span class="svc-num">05</span>
+      <span class="svc-name" data-fr="Projet complet studio" data-en="Full studio project">Projet complet studio</span>
+      <span class="svc-desc" data-fr="Monde entier, multi-zones, livraisons par étapes avec contrat." data-en="Full world, multi-zone, staged deliveries with professional contract.">Monde entier, multi-zones, livraisons par étapes avec contrat.</span>
+      <span class="svc-arr">→</span>
+    </div>
+  </div>
+</section>
+
+<!-- CREATIONS -->
+<section id="works" class="section">
+  <div class="reveal gallery-header">
+    <div>
+      <p class="s-eyebrow" data-fr="MES CRÉATIONS" data-en="MY WORK">MES CRÉATIONS</p>
+      <h2 class="s-title" data-fr="Ce que j'ai construit" data-en="What I've built">Ce que j'ai construit</h2>
+    </div>
+    <button class="btn" onclick="openAdd()" data-fr="+ Ajouter une création" data-en="+ Add a creation">+ Ajouter une création</button>
+  </div>
+  <div class="gallery-grid reveal" id="gallery-grid">
+    <!-- items injected by JS -->
+    <label class="gallery-upload-zone" for="file-input">
+      <p data-fr="Glisse tes screenshots ici" data-en="Drop your screenshots here">Glisse tes screenshots ici</p>
+      <small data-fr="ou clique pour choisir un fichier" data-en="or click to choose a file">ou clique pour choisir un fichier</small>
+    </label>
+    <input type="file" id="file-input" accept="image/*" multiple/>
+  </div>
+</section>
+
+<!-- MODAL ADD CREATION -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3 data-fr="Nouvelle création" data-en="New creation">Nouvelle création</h3>
+    <input id="m-title" type="text" placeholder="Titre du projet" data-ph-fr="Titre du projet" data-ph-en="Project title"/>
+    <input id="m-type"  type="text" placeholder="Type (RP, Obby, Simulateur...)" data-ph-fr="Type (RP, Obby, Simulateur...)" data-ph-en="Type (RP, Obby, Simulator...)"/>
+    <input id="m-url"   type="text" placeholder="Lien Roblox (optionnel)" data-ph-fr="Lien Roblox (optionnel)" data-ph-en="Roblox link (optional)"/>
+    <div style="border:1px dashed rgba(255,255,255,.1);border-radius:3px;padding:20px;text-align:center;cursor:pointer;margin-bottom:12px" onclick="document.getElementById('m-img').click()">
+      <p id="img-preview-label" style="font-size:12px;color:var(--dim);font-family:var(--mono)" data-fr="Choisir une image" data-en="Choose an image">Choisir une image</p>
+      <input type="file" id="m-img" accept="image/*" style="display:none"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()" data-fr="Annuler" data-en="Cancel">Annuler</button>
+      <button class="btn btn-fill" onclick="saveCreation()" data-fr="Ajouter" data-en="Add">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<section id="pricing" class="section">
+  <div class="reveal">
+    <p class="s-eyebrow" data-fr="TARIFS" data-en="PRICING">TARIFS</p>
+    <h2 class="s-title" style="margin-bottom:32px" data-fr="Investissement" data-en="Investment">Investissement</h2>
+    <div class="pricing-controls">
+      <button class="ctrl on" id="c-eur"   onclick="setCur('eur')"   data-fr="€ EUR"    data-en="€ EUR">€ EUR</button>
+      <button class="ctrl"    id="c-robux" onclick="setCur('robux')" data-fr="R$ Robux" data-en="R$ Robux">R$ Robux</button>
+    </div>
+  </div>
+  <div class="pricing-grid reveal">
+
+    <!-- STARTER -->
+    <div class="plan">
+      <div class="plan-name" data-fr="STARTER" data-en="STARTER">STARTER</div>
+      <div class="plan-amount" id="pa-s"><span class="cur" id="c-s">€</span><span id="v-s">20</span></div>
+      <div class="plan-sub" data-fr="par map / projet simple" data-en="per map / simple project">par map / projet simple</div>
+      <div class="plan-sep"></div>
+      <ul class="plan-feats">
+        <li class="yes" data-fr="1 map personnalisée"   data-en="1 custom map">1 map personnalisée</li>
+        <li class="yes" data-fr="Thème au choix"        data-en="Theme of your choice">Thème au choix</li>
+        <li class="yes" data-fr="2 révisions incluses"  data-en="2 revisions included">2 révisions incluses</li>
+        <li class="no"  data-fr="Livraison 5 jours"     data-en="5-day delivery">Livraison 5 jours</li>
+        <li class="no"  data-fr="Fichiers sources"      data-en="Source files">Fichiers sources</li>
+      </ul>
+      <button class="plan-btn" onclick="goContact()" data-fr="COMMENCER" data-en="GET STARTED">COMMENCER</button>
     </div>
 
-    <div class="stats-bar">
-        <div class="stat-item"><h3>50+</h3><p data-fr="Projets" data-en="Projects">Projets</p></div>
-        <div class="stat-item"><h3>100%</h3><p data-fr="Satisfait" data-en="Satisfied">Satisfait</p></div>
-        <div class="stat-item"><h3>4 ans</h3><p data-fr="Expérience" data-en="Experience">Expérience</p></div>
+    <!-- PRO -->
+    <div class="plan pop">
+      <div class="pop-badge" data-fr="POPULAIRE" data-en="POPULAR">POPULAIRE</div>
+      <div class="plan-name" data-fr="PRO" data-en="PRO">PRO</div>
+      <div class="plan-amount" id="pa-p"><span class="cur" id="c-p">€</span><span id="v-p">45</span></div>
+      <div class="plan-sub" data-fr="par projet élaboré" data-en="per elaborated project">par projet élaboré</div>
+      <div class="plan-sep"></div>
+      <ul class="plan-feats">
+        <li class="yes" data-fr="Map détaillée & optimisée" data-en="Detailed & optimized map">Map détaillée & optimisée</li>
+        <li class="yes" data-fr="Ambiance / lore inclus"    data-en="Atmosphere / lore included">Ambiance / lore inclus</li>
+        <li class="yes" data-fr="4 révisions incluses"      data-en="4 revisions included">4 révisions incluses</li>
+        <li class="yes" data-fr="Livraison 7 jours"         data-en="7-day delivery">Livraison 7 jours</li>
+        <li class="no"  data-fr="Fichiers sources"          data-en="Source files">Fichiers sources</li>
+      </ul>
+      <button class="plan-btn hi" onclick="goContact()" data-fr="CHOISIR PRO" data-en="CHOOSE PRO">CHOISIR PRO</button>
     </div>
 
-    <section id="portfolio">
-        <h2 class="section-title" data-fr="Portfolio" data-en="Works">Portfolio</h2>
-        <div class="grid">
-            <div class="project-card">
-                <div class="project-img"></div>
-                <div style="padding: 20px;">
-                    <h4 data-fr="Lobby Cyberpunk" data-en="Cyberpunk Lobby">Lobby Cyberpunk</h4>
-                    <p style="color: var(--accent); font-weight: bold; margin-top: 10px;" class="price" data-eur="45€" data-robux="7 500 R$">45€</p>
-                </div>
-            </div>
-            </div>
-    </section>
+    <!-- ELITE -->
+    <div class="plan">
+      <div class="plan-name" data-fr="ELITE" data-en="ELITE">ELITE</div>
+      <div class="plan-amount" id="pa-e"><span class="cur" id="c-e">€</span><span id="v-e">150</span></div>
+      <div class="plan-sub" data-fr="projet complet" data-en="complete project">projet complet</div>
+      <div class="plan-sep"></div>
+      <ul class="plan-feats">
+        <li class="yes" data-fr="Zone / monde entier"    data-en="Full zone / world">Zone / monde entier</li>
+        <li class="yes" data-fr="Level design narratif"  data-en="Narrative level design">Level design narratif</li>
+        <li class="yes" data-fr="Révisions illimitées"   data-en="Unlimited revisions">Révisions illimitées</li>
+        <li class="yes" data-fr="Support post-livraison" data-en="Post-delivery support">Support post-livraison</li>
+        <li class="yes" data-fr="Fichiers sources"       data-en="Source files">Fichiers sources</li>
+      </ul>
+      <button class="plan-btn" onclick="goContact()" data-fr="CHOISIR ELITE" data-en="CHOOSE ELITE">CHOISIR ELITE</button>
+    </div>
 
-    <section id="avis">
-        <h2 class="section-title" data-fr="Avis Clients" data-en="Customer Reviews">Avis Clients</h2>
-        <div class="review-system">
-            <div class="review-form">
-                <input type="text" id="revName" placeholder="Votre Pseudo / Name">
-                <textarea id="revMsg" placeholder="Votre avis / Your review" rows="4"></textarea>
-                <button class="btn-post" onclick="addReview()" data-fr="Publier l'avis" data-en="Post Review">Publier l'avis</button>
-            </div>
-            <div id="reviewsList" class="reviews-list">
-                </div>
+    <!-- SUR MESURE -->
+    <div class="plan">
+      <div class="plan-name" data-fr="SUR MESURE" data-en="CUSTOM">SUR MESURE</div>
+      <div class="plan-amount custom" id="pa-c" data-fr="SUR<br>DEVIS" data-en="ON<br>QUOTE">SUR<br>DEVIS</div>
+      <div class="plan-sub" data-fr="projet unique / studio" data-en="unique project / studio">projet unique / studio</div>
+      <div class="plan-sep"></div>
+      <ul class="plan-feats">
+        <li class="yes" data-fr="Brief personnalisé"     data-en="Custom brief">Brief personnalisé</li>
+        <li class="yes" data-fr="Équipe & collaboration" data-en="Team & collaboration">Équipe & collaboration</li>
+        <li class="yes" data-fr="Livraisons par étapes"  data-en="Staged deliveries">Livraisons par étapes</li>
+        <li class="yes" data-fr="Contrat professionnel"  data-en="Professional contract">Contrat professionnel</li>
+        <li class="yes" data-fr="NDA possible"           data-en="NDA possible">NDA possible</li>
+      </ul>
+      <button class="plan-btn" onclick="goContact()" data-fr="ME CONTACTER" data-en="CONTACT ME">ME CONTACTER</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="section">
+  <div class="about-grid reveal">
+    <div>
+      <p class="s-eyebrow" data-fr="À PROPOS" data-en="ABOUT">À PROPOS</p>
+      <h2 class="s-title" style="margin-bottom:32px">Zayrho7</h2>
+      <p class="about-body"
+         data-fr="Builder Roblox avec plus de 3 ans d'expérience sur Roblox Studio. Je me spécialise dans les maps immersives et les environnements de jeu optimisés, pensés pour durer."
+         data-en="Roblox builder with 3+ years on Roblox Studio. I specialize in immersive maps and optimized game environments, built to last.">Builder Roblox avec plus de 3 ans d'expérience sur Roblox Studio. Je me spécialise dans les maps immersives et les environnements de jeu optimisés, pensés pour durer.</p>
+      <p class="about-body" style="margin-top:16px"
+         data-fr="Chaque projet est livré avec soin, dans les délais convenus. Je travaille directement avec mes clients pour capturer exactement ce qu'ils imaginent."
+         data-en="Every project is delivered with care, on schedule. I work directly with clients to capture exactly what they envision.">Chaque projet est livré avec soin, dans les délais convenus. Je travaille directement avec mes clients pour capturer exactement ce qu'ils imaginent.</p>
+      <div class="skills-wrap">
+        <span class="skill-chip">Roblox Studio</span>
+        <span class="skill-chip">Level Design</span>
+        <span class="skill-chip">Terrain</span>
+        <span class="skill-chip">Lighting</span>
+        <span class="skill-chip">Optimization</span>
+        <span class="skill-chip">Lore Building</span>
+        <span class="skill-chip">UI/UX</span>
+      </div>
+    </div>
+    <div class="about-aside">
+      <div class="aside-block">
+        <div class="aside-label" data-fr="STATUT" data-en="STATUS">STATUT</div>
+        <div class="aside-val" style="color:#7aff9a" data-fr="Disponible" data-en="Available">Disponible</div>
+        <div class="aside-note" data-fr="Ouvert aux nouvelles commandes" data-en="Open to new orders">Ouvert aux nouvelles commandes</div>
+      </div>
+      <div class="aside-block">
+        <div class="aside-label" data-fr="DÉLAI MOYEN" data-en="AVG DELIVERY">DÉLAI MOYEN</div>
+        <div class="aside-val" data-fr="5–7 jours" data-en="5–7 days">5–7 jours</div>
+        <div class="aside-note" data-fr="Selon la complexité du projet" data-en="Depending on project complexity">Selon la complexité du projet</div>
+      </div>
+      <div class="aside-block">
+        <div class="aside-label" data-fr="LANGUE" data-en="LANGUAGE">LANGUE</div>
+        <div class="aside-val">FR / EN</div>
+        <div class="aside-note" data-fr="Je parle couramment les deux" data-en="I speak both fluently">Je parle couramment les deux</div>
+      </div>
+      <div class="aside-block">
+        <div class="aside-label">DISCORD</div>
+        <div class="aside-val" style="font-size:18px">zayrho7</div>
+        <div class="aside-note" data-fr="Contact préféré" data-en="Preferred contact">Contact préféré</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section" style="padding-top:0">
+  <div class="contact-wrap reveal">
+    <h2 class="contact-title" data-fr="Travaillons<br>ensemble." data-en="Let's build<br>together.">Travaillons<br>ensemble.</h2>
+    <p class="contact-sub"
+       data-fr="Un projet en tête ? Écris-moi directement. Je réponds en moins de 24h."
+       data-en="Have a project in mind? Write to me directly. I reply within 24h.">Un projet en tête ? Écris-moi directement. Je réponds en moins de 24h.</p>
+    <div class="contact-links">
+      <a href="https://discord.com" target="_blank" class="contact-card">
+        <span style="font-size:18px">💬</span>
+        <div><span class="cc-label">DISCORD</span><span class="cc-val">zayrho7</span></div>
+      </a>
+      <a href="https://www.roblox.com" target="_blank" class="contact-card">
+        <span style="font-size:18px">🎮</span>
+        <div><span class="cc-label">ROBLOX</span><span class="cc-val">@Zayrho7</span></div>
+      </a>
+      <a href="mailto:contact@zayrho7.com" class="contact-card">
+        <span style="font-size:18px">✉️</span>
+        <div>
+          <span class="cc-label">EMAIL</span>
+          <span class="cc-val" data-fr="Envoyer un mail" data-en="Send an email">Envoyer un mail</span>
         </div>
+      </a>
+    </div>
+  </div>
+</section>
 
-        <div class="discord-warning">
-            <p data-fr="Sur Internet ne faites confiance à personne en dehors des membres du Staff validés. Restez vigilant !"
-               data-en="On the Internet, do not trust anyone outside of validated Staff members. Stay vigilant!">
-               Sur Internet ne faites confiance à personne en dehors des membres du Staff validés. Restez vigilant !
-            </p>
+<!-- FOOTER -->
+<footer>
+  <span>ZAYRHO7 — ROBLOX BUILDER</span>
+  <span data-fr="© 2025 — Tous droits réservés" data-en="© 2025 — All rights reserved">© 2025 — Tous droits réservés</span>
+</footer>
+
+<script>
+/* ─── STATE ─── */
+let lang = 'fr';
+let cur  = 'eur';
+let creations = JSON.parse(localStorage.getItem('zrh7_creations') || '[]');
+let pendingImg = null;
+
+/* ─── LANG ─── */
+function setLang(l) {
+  lang = l;
+  document.getElementById('btn-fr').classList.toggle('on', l==='fr');
+  document.getElementById('btn-en').classList.toggle('on', l==='en');
+  document.documentElement.lang = l;
+  document.querySelectorAll('[data-fr][data-en]').forEach(el => {
+    const v = el.getAttribute('data-'+l);
+    if (v===null) return;
+    if (v.includes('<br>')) el.innerHTML = v; else el.textContent = v;
+  });
+  document.querySelectorAll('[data-ph-fr][data-ph-en]').forEach(el => {
+    el.placeholder = el.getAttribute('data-ph-'+l);
+  });
+  renderGallery();
+}
+
+/* ─── CURRENCY ─── */
+const P = {
+  eur:   {s:['€','20'], p:['€','45'], e:['€','150']},
+  robux: {s:['R$','4 500'], p:['R$','7 500'], e:['R$','25 000']}
+};
+function setCur(c) {
+  cur = c;
+  document.getElementById('c-eur').classList.toggle('on', c==='eur');
+  document.getElementById('c-robux').classList.toggle('on', c==='robux');
+  const d = P[c];
+  [['s',d.s],['p',d.p],['e',d.e]].forEach(([k,v]) => {
+    document.getElementById('c-'+k).textContent = v[0];
+    document.getElementById('v-'+k).textContent = v[1];
+    const el = document.getElementById('pa-'+k);
+    el.style.transform = 'scale(1.06)'; el.style.color = '#aaa';
+    setTimeout(()=>{ el.style.transform=''; el.style.color=''; }, 280);
+  });
+}
+
+/* ─── GALLERY ─── */
+function renderGallery() {
+  const grid = document.getElementById('gallery-grid');
+  const upload = grid.querySelector('.gallery-upload-zone, label');
+
+  // Remove old items except upload zone
+  Array.from(grid.children).forEach(c => {
+    if (!c.classList.contains('gallery-upload-zone') && c.tagName!=='LABEL' && c.id!=='file-input') c.remove();
+  });
+
+  creations.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'gallery-item' + (item.img ? ' has-img' : '');
+    if (item.img) {
+      div.innerHTML = `
+        <img src="${item.img}" alt="${item.title}" loading="lazy"/>
+        <div class="gallery-overlay">
+          <div class="gallery-overlay-text">
+            <div class="overlay-title">${item.title}</div>
+            <div class="overlay-tag">${item.type}</div>
+          </div>
         </div>
-    </section>
+        <button onclick="removeCreation(${i})" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);border:none;color:#fff;cursor:pointer;border-radius:2px;padding:4px 8px;font-size:10px;z-index:2">✕</button>
+      `;
+    } else {
+      div.innerHTML = `
+        <div class="gallery-item-inner">
+          <div class="gallery-placeholder">🧱</div>
+          <div style="text-align:center">
+            <div style="font-size:13px;color:var(--dim);font-weight:500">${item.title}</div>
+            <div class="gallery-add-label">${item.type}</div>
+          </div>
+          <button onclick="removeCreation(${i})" style="margin-top:8px;background:transparent;border:var(--border);color:var(--dim);cursor:pointer;padding:4px 12px;font-size:10px;border-radius:2px;font-family:var(--mono)">Supprimer</button>
+        </div>
+      `;
+    }
+    grid.insertBefore(div, upload || null);
+  });
 
-    <script>
-        // TRADUCTION & DEVISE
-        function switchCurrency(type, btn) {
-            document.querySelectorAll('.price').forEach(el => {
-                el.innerText = el.getAttribute(`data-${type}`);
-            });
-            btn.parentElement.querySelectorAll('.btn-switch').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
+  if (creations.length === 0) {
+    const empty = document.createElement('div');
+    empty.style.cssText='grid-column:1/-1;padding:60px 0;text-align:center';
+    empty.innerHTML=`<p style="font-family:var(--mono);font-size:12px;color:var(--dim2)" data-fr="Aucune création pour l\'instant — clique sur + Ajouter" data-en="No creations yet — click + Add a creation">Aucune création pour l'instant — clique sur + Ajouter</p>`;
+    grid.insertBefore(empty, upload || null);
+  }
+}
 
-        function switchLang(lang, btn) {
-            document.querySelectorAll('[data-fr]').forEach(el => {
-                el.innerHTML = el.getAttribute(`data-${lang}`);
-            });
-            btn.parentElement.querySelectorAll('.btn-switch').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
+function removeCreation(i) {
+  creations.splice(i,1);
+  localStorage.setItem('zrh7_creations', JSON.stringify(creations));
+  renderGallery();
+}
 
-        // SYSTEME D'AVIS
-        let reviews = JSON.parse(localStorage.getItem('zayrho_reviews')) || [];
+function openAdd() {
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.getElementById('m-title').value='';
+  document.getElementById('m-type').value='';
+  document.getElementById('m-url').value='';
+  document.getElementById('img-preview-label').textContent = lang==='fr' ? 'Choisir une image' : 'Choose an image';
+  pendingImg = null;
+}
 
-        function renderReviews() {
-            const list = document.getElementById('reviewsList');
-            list.innerHTML = '';
-            reviews.forEach((rev, index) => {
-                const isOwner = rev.id === localStorage.getItem('user_id');
-                list.innerHTML += `
-                    <div class="review-item">
-                        <h4>${rev.name}</h4>
-                        <p>${rev.msg}</p>
-                        ${isOwner ? `<button class="btn-delete" onclick="deleteReview(${index})">Supprimer</button>` : ''}
-                    </div>
-                `;
-            });
-        }
+document.getElementById('m-img').addEventListener('change', function() {
+  const f = this.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    pendingImg = e.target.result;
+    document.getElementById('img-preview-label').textContent = '✓ ' + f.name;
+  };
+  r.readAsDataURL(f);
+});
 
-        function addReview() {
-            const name = document.getElementById('revName').value;
-            const msg = document.getElementById('revMsg').value;
-            if(!localStorage.getItem('user_id')) localStorage.setItem('user_id', 'user_' + Math.random());
-            
-            if(name && msg) {
-                reviews.push({ name, msg, id: localStorage.getItem('user_id') });
-                localStorage.setItem('zayrho_reviews', JSON.stringify(reviews));
-                renderReviews();
-                document.getElementById('revName').value = '';
-                document.getElementById('revMsg').value = '';
-            }
-        }
+document.getElementById('file-input').addEventListener('change', function() {
+  Array.from(this.files).forEach(f => {
+    const r = new FileReader();
+    r.onload = e => {
+      creations.push({title: f.name.replace(/\.[^.]+$/,''), type:'Roblox Build', img: e.target.result, url:''});
+      localStorage.setItem('zrh7_creations', JSON.stringify(creations));
+      renderGallery();
+    };
+    r.readAsDataURL(f);
+  });
+  this.value='';
+});
 
-        function deleteReview(index) {
-            reviews.splice(index, 1);
-            localStorage.setItem('zayrho_reviews', JSON.stringify(reviews));
-            renderReviews();
-        }
+function saveCreation() {
+  const t = document.getElementById('m-title').value.trim();
+  const tp = document.getElementById('m-type').value.trim();
+  if (!t) return;
+  creations.push({title:t, type:tp||'Roblox Build', img:pendingImg||null, url:document.getElementById('m-url').value.trim()});
+  localStorage.setItem('zrh7_creations', JSON.stringify(creations));
+  renderGallery();
+  closeModal();
+}
 
-        renderReviews();
-    </script>
+/* ─── SMOOTH ANCHORS ─── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({behavior:'smooth'});
+  });
+});
+
+function goContact() { document.getElementById('contact').scrollIntoView({behavior:'smooth'}); }
+
+/* ─── REVEAL ─── */
+const obs = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); }), {threshold:.08});
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+/* ─── MODAL CLOSE ON BG ─── */
+document.getElementById('modal').addEventListener('click', function(e) { if (e.target===this) closeModal(); });
+
+/* ─── INIT ─── */
+renderGallery();
+</script>
 </body>
 </html>
